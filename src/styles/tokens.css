@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  color-scheme: light;
+  --of-magenta-50: #fff0f7;
+  --of-magenta-300: #f53fa5;
+  --of-magenta-400: #d11a82;
+  --of-magenta-500: #a60e64;
+  --of-magenta-600: #80074d;
+
+  --of-gray-0: #ffffff;
+  --of-gray-25: #fbf9fb;
+  --of-gray-50: #f6f3f6;
+  --of-gray-100: #ece7ec;
+  --of-gray-200: #dcd4dc;
+  --of-gray-300: #bdb2bd;
+  --of-gray-400: #958997;
+  --of-gray-500: #6e626f;
+  --of-gray-600: #504551;
+  --of-gray-700: #352d37;
+  --of-gray-900: #14101a;
+
+  --of-success-500: #2fa775;
+  --of-success-100: #dcf3e7;
+  --of-warning-500: #d88a2b;
+  --of-warning-100: #fbebd3;
+  --of-danger-500: #d93452;
+  --of-danger-100: #fbdde3;
+  --of-info-500: #4a6cf7;
+  --of-info-100: #dce2fd;
+
+  --of-bg-base: var(--of-gray-25);
+  --of-bg-elevated: var(--of-gray-0);
+  --of-bg-recessed: var(--of-gray-50);
+  --of-bg-brand: var(--of-magenta-600);
+  --of-bg-brand-tint: var(--of-magenta-50);
+  --of-bg-success-tint: var(--of-success-100);
+  --of-bg-warning-tint: var(--of-warning-100);
+  --of-bg-danger-tint: var(--of-danger-100);
+  --of-bg-info-tint: var(--of-info-100);
+
+  --of-fg-default: var(--of-gray-900);
+  --of-fg-muted: var(--of-gray-600);
+  --of-fg-subtle: var(--of-gray-500);
+  --of-fg-on-brand: #ffffff;
+  --of-fg-brand: var(--of-magenta-600);
+  --of-fg-success: #1f7a54;
+  --of-fg-warning: #a26417;
+  --of-fg-danger: #a42236;
+  --of-fg-info: #2f4bc4;
+
+  --of-border-line: var(--of-gray-200);
+  --of-border-brand: var(--of-magenta-400);
+  --of-ring: color-mix(in oklch, var(--of-magenta-400) 50%, transparent);
+
+  --of-font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --of-font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --of-radius-md: 10px;
+  --of-radius-lg: 14px;
+  --of-shadow-xs: 0 1px 2px rgba(30, 10, 20, 0.05);
+  --of-shadow-sm: 0 2px 4px rgba(30, 10, 20, 0.06), 0 1px 2px rgba(30, 10, 20, 0.04);
+
+  --of-dur-fast: 120ms;
+  --of-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--of-font-sans);
+  background: var(--of-bg-base);
+  color: var(--of-fg-default);
+}
