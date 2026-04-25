@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resource Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    /* ─── Keel design tokens ───────────────────────────────────── */
+    :root {
+      --color-bg:          #F8F8F6;
+      --color-surface:     #FFFFFF;
+      --color-border:      #E4E4E0;
+      --color-border-hover:#C8C8C2;
+      --color-text:        #1A1A18;
+      --color-text-muted:  #6B6B65;
+      --color-text-subtle: #9A9A94;
+
+      --color-primary:     #1A1A18;
+      --color-primary-fg:  #FFFFFF;
+
+      --color-accent:      #5B4FE8;
+      --color-accent-light:#EEF0FF;
+      --color-accent-fg:   #3D34C4;
+
+      --color-video:       #E8934F;
+      --color-video-light: #FFF4EC;
+      --color-video-fg:    #C46B22;
+
+      --color-tool:        #3DAF7C;
+      --color-tool-light:  #EDFAF4;
+      --color-tool-fg:     #238C5C;
+
+      --color-univ:        #D64F6E;
+      --color-univ-light:  #FFF0F3;
+      --color-univ-fg:     #B0304F;
+
+      --radius-sm:  6px;
+      --radius-md:  10px;
+      --radius-lg:  14px;
+      --radius-pill:999px;
+
+      --shadow-card: 0 1px 3px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+      --shadow-hover: 0 4px 16px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+
+      --font: 'Inter', system-ui, sans-serif;
+      --transition: 0.18s ease;
+    }
+
+    /* ─── Reset / base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-size: 14px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── Lucide icon base ──────────────────────────────────────── */
+    .lucide {
+      display: inline-block;
+      vertical-align: middle;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ─── Layout helpers ────────────────────────────────────────── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+
+    /* ─── Top nav ───────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(248,248,246,.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+    .nav-brand-icon {
+      width: 28px; height: 28px;
+      background: var(--color-primary);
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-brand-icon svg { width: 16px; height: 16px; fill: #fff; }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      transition: background var(--transition), color var(--transition);
+    }
+    .nav-links a:hover { background: var(--color-border); color: var(--color-text); }
+    .nav-count {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--color-accent-light);
+      color: var(--color-accent-fg);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* ─── Hero ──────────────────────────────────────────────────── */
+    .hero {
+      padding: 56px 0 40px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--color-accent-fg);
+      background: var(--color-accent-light);
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 18px;
+    }
+    .hero-eyebrow .lucide { width: 10px; height: 10px; stroke-width: 2.5; }
+    .hero-title {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.7px;
+      line-height: 1.18;
+      margin-bottom: 14px;
+      max-width: 620px;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--color-accent) 0%, #8B7FF5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--color-text-muted);
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+    .hero-stats {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+    .stat-num { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+    .stat-label { font-size: 12px; color: var(--color-text-muted); font-weight: 500; }
+
+    /* ─── Filter bar ────────────────────────────────────────────── */
+    .filter-bar {
+      padding: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-right: 4px;
+    }
+    .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .filter-btn:hover { border-color: var(--color-border-hover); color: var(--color-text); }
+    .filter-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+    .filter-btn .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-all      { background: var(--color-text-muted); }
+    .dot-material { background: var(--color-accent); }
+    .dot-video    { background: var(--color-video); }
+    .dot-tool     { background: var(--color-tool); }
+
+    /* ─── Search ────────────────────────────────────────────────── */
+    .search-wrap { margin-left: auto; position: relative; }
+    .search-wrap .lucide {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 14px;
+      color: var(--color-text-subtle);
+      pointer-events: none;
+    }
+    .search-input {
+      padding: 6px 12px 6px 32px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--color-text);
+      width: 220px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .search-input::placeholder { color: var(--color-text-subtle); }
+    .search-input:focus { border-color: var(--color-accent); }
+
+    /* ─── Main layout ───────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 32px;
+      padding: 32px 0 64px;
+    }
+
+    /* ─── Sidebar ───────────────────────────────────────────────── */
+    .sidebar { position: sticky; top: 76px; align-self: start; }
+    .sidebar-section { margin-bottom: 28px; }
+    .sidebar-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--color-text-subtle);
+      margin-bottom: 10px;
+      padding-left: 8px;
+    }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      transition: background var(--transition), color var(--transition);
+      cursor: pointer;
+    }
+    .sidebar-nav li a:hover,
+    .sidebar-nav li a.active {
+      background: var(--color-border);
+      color: var(--color-text);
+    }
+    .sidebar-nav .badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text-muted);
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+    }
+    .sidebar-nav .icon {
+      width: 18px; height: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sidebar-nav .icon .lucide { width: 15px; height: 15px; }
+
+    /* ─── Content area ──────────────────────────────────────────── */
+    .section { margin-bottom: 48px; }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .section-title .lucide { width: 17px; height: 17px; stroke-width: 2; }
+    .section-count { font-size: 12px; color: var(--color-text-subtle); font-weight: 500; }
+    .section-divider { height: 1px; background: var(--color-border); margin-bottom: 18px; }
+
+    /* ─── Card grid ─────────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px;
+    }
+
+    /* ─── Resource card ─────────────────────────────────────────── */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-card);
+      transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
+      cursor: pointer;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: var(--color-border-hover);
+      transform: translateY(-2px);
+    }
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .card-logo {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+    }
+    .card-logo .lucide { width: 18px; height: 18px; color: var(--color-text-muted); }
+    .card-badges {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .badge-material { background: var(--color-accent-light); color: var(--color-accent-fg); }
+    .badge-video    { background: var(--color-video-light);  color: var(--color-video-fg); }
+    .badge-tool     { background: var(--color-tool-light);   color: var(--color-tool-fg); }
+    .badge-univ     { background: var(--color-univ-light);   color: var(--color-univ-fg); }
+    .badge-free     { background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; }
+    .card-title { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; line-height: 1.4; }
+    .card-source { font-size: 12px; color: var(--color-text-muted); font-weight: 500; }
+    .card-desc { font-size: 13px; color: var(--color-text-muted); line-height: 1.5; }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid var(--color-border);
+      margin-top: auto;
+    }
+    .card-meta { display: flex; gap: 10px; }
+    .card-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--color-text-subtle);
+      font-weight: 500;
+    }
+    .card-meta-item .lucide { width: 11px; height: 11px; }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-accent-fg);
+      transition: gap var(--transition);
+    }
+    .card-link:hover { gap: 6px; }
+    .card-link .lucide { width: 12px; height: 12px; }
+
+    /* ─── Hidden state ──────────────────────────────────────────── */
+    .card[hidden], .section[hidden] { display: none; }
+
+    /* ─── Empty state ───────────────────────────────────────────── */
+    .empty-state { text-align: center; padding: 60px 0; color: var(--color-text-muted); }
+    .empty-state .lucide { width: 36px; height: 36px; stroke-width: 1.5; margin-bottom: 12px; color: var(--color-text-subtle); }
+    .empty-state-text { font-size: 14px; }
+
+    /* ─── Footer ────────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--color-border);
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-text { font-size: 12px; color: var(--color-text-subtle); }
+    .footer-links { display: flex; gap: 16px; }
+    .footer-links a { font-size: 12px; color: var(--color-text-subtle); transition: color var(--transition); }
+    .footer-links a:hover { color: var(--color-text); }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .nav-links { display: none; }
+      .search-wrap { margin-left: 0; }
+      .filter-bar { padding: 14px 0; }
+      .hero { padding: 36px 0 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ───────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-brand">
+      <span class="nav-brand-icon">
+        <svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.18L13 6.5v3L8 12.82 3 9.5v-3L8 3.18z"/></svg>
+      </span>
+      AI Resource Portal
+    </a>
+    <ul class="nav-links">
+      <li><a href="#university">University</a></li>
+      <li><a href="#industry">Industry</a></li>
+      <li><a href="#videos">Videos</a></li>
+      <li><a href="#tooling">Tooling</a></li>
+    </ul>
+    <span class="nav-count">37 resources</span>
+  </div>
+</nav>
+
+<!-- ── Hero ──────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <i data-lucide="circle-dot"></i>
+      Curated · April 2026
+    </div>
+    <h1 class="hero-title">Your gateway to <em>learning AI</em>, curated from the best sources</h1>
+    <p class="hero-sub">Free courses, reading materials, video lectures, and developer tools from Stanford, MIT, Harvard, DeepLearning.AI, Hugging Face, Anthropic, and more.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">20+</span>
+        <span class="stat-label">Free Courses</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">12</span>
+        <span class="stat-label">Video Resources</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">10+</span>
+        <span class="stat-label">AI Tools</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Free to start</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Filter bar ─────────────────────────────────────── -->
+<div class="container">
+  <div class="filter-bar">
+    <span class="filter-label">Show</span>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">
+      <span class="dot dot-all"></span> All
+    </button>
+    <button class="filter-btn" data-filter="material" onclick="setFilter('material',this)">
+      <span class="dot dot-material"></span> Materials
+    </button>
+    <button class="filter-btn" data-filter="video" onclick="setFilter('video',this)">
+      <span class="dot dot-video"></span> Videos
+    </button>
+    <button class="filter-btn" data-filter="tool" onclick="setFilter('tool',this)">
+      <span class="dot dot-tool"></span> AI Tools
+    </button>
+    <div class="search-wrap">
+      <i data-lucide="search"></i>
+      <input class="search-input" type="search" placeholder="Search resources…" id="searchInput" oninput="doSearch(this.value)" />
+    </div>
+  </div>
+</div>
+
+<!-- ── Main layout ────────────────────────────────────── -->
+<div class="container">
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-title">Categories</p>
+        <ul class="sidebar-nav">
+          <li><a href="#university" onclick="scrollTo('university')"><span class="icon"><i data-lucide="graduation-cap"></i></span> University Courses <span class="badge">8</span></a></li>
+          <li><a href="#industry" onclick="scrollTo('industry')"><span class="icon"><i data-lucide="building-2"></i></span> Industry &amp; Labs <span class="badge">7</span></a></li>
+          <li><a href="#newsletters" onclick="scrollTo('newsletters')"><span class="icon"><i data-lucide="rss"></i></span> Newsletters <span class="badge">4</span></a></li>
+          <li><a href="#videos" onclick="scrollTo('videos')"><span class="icon"><i data-lucide="play"></i></span> Video Channels <span class="badge">8</span></a></li>
+          <li><a href="#tooling" onclick="scrollTo('tooling')"><span class="icon"><i data-lucide="wrench"></i></span> AI Tooling <span class="badge">10</span></a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-title">Format</p>
+        <ul class="sidebar-nav">
+          <li><a onclick="setFilter('material', null)"><span class="icon"><i data-lucide="file-text"></i></span> Materials <span class="badge">15</span></a></li>
+          <li><a onclick="setFilter('video', null)"><span class="icon"><i data-lucide="video"></i></span> Videos <span class="badge">8</span></a></li>
+          <li><a onclick="setFilter('tool', null)"><span class="icon"><i data-lucide="zap"></i></span> Tools <span class="badge">10</span></a></li>
+        </ul>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-title">Level</p>
+        <ul class="sidebar-nav">
+          <li><a onclick="setLevelFilter('Beginner')"><span class="icon"><i data-lucide="sprout"></i></span> Beginner</a></li>
+          <li><a onclick="setLevelFilter('Intermediate')"><span class="icon"><i data-lucide="trending-up"></i></span> Intermediate</a></li>
+          <li><a onclick="setLevelFilter('Advanced')"><span class="icon"><i data-lucide="microscope"></i></span> Advanced</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content" id="mainContent">
+
+      <!-- ── University Courses ───────── -->
+      <section class="section" id="university" data-category="university">
+        <div class="section-header">
+          <h2 class="section-title"><i data-lucide="graduation-cap"></i> University Courses</h2>
+          <span class="section-count">8 resources</span>
+        </div>
+        <div class="section-divider"></div>
+        <div class="card-grid">
+
+          <div class="card" data-type="material" data-level="Advanced" data-keywords="stanford machine learning cs229 andrew ng">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="book-open"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Stanford</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS229 · Machine Learning</div>
+              <div class="card-source">Stanford University · Andrew Ng</div>
+            </div>
+            <p class="card-desc">Supervised & unsupervised learning, deep dive into algorithms. Lecture notes, problem sets, and exams available free.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Lecture Notes</span>
+                <span class="card-meta-item"><i data-lucide="target"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://cs229.stanford.edu/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Advanced" data-keywords="stanford deep learning cs230 neural networks">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="brain"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Stanford</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS230 · Deep Learning</div>
+              <div class="card-source">Stanford University · Andrew Ng</div>
+            </div>
+            <p class="card-desc">Neural networks, CNNs, RNNs, transformers, and best practices for building deep learning models at scale.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Slides + Notes</span>
+                <span class="card-meta-item"><i data-lucide="target"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://cs230.stanford.edu/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Advanced" data-keywords="stanford artificial intelligence cs221 search planning">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="bot"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Stanford</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS221 · Artificial Intelligence</div>
+              <div class="card-source">Stanford University</div>
+            </div>
+            <p class="card-desc">Foundations of AI: search, reasoning, knowledge representation, planning, decision-making, and probabilistic inference.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Full Course</span>
+                <span class="card-meta-item"><i data-lucide="target"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://stanford-cs221.github.io/autumn2024/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="harvard cs50 python ai introduction">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="graduation-cap"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Harvard</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS50's Introduction to AI with Python</div>
+              <div class="card-source">Harvard University</div>
+            </div>
+            <p class="card-desc">Covers probability theory, neural networks, and machine learning. One of Harvard's most popular free AI offerings.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i><i data-lucide="video"></i> Hybrid</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://pll.harvard.edu/course/cs50s-introduction-artificial-intelligence-python" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="harvard machine learning data science python">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="bar-chart-2"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Harvard</span>
+                <span class="badge badge-free">Audit Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Data Science: Machine Learning</div>
+              <div class="card-source">Harvard University · edX</div>
+            </div>
+            <p class="card-desc">Part of Harvard's Professional Certificate in Data Science. Covers cross-validation, regularization, and matrix factorization.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Course</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://pll.harvard.edu/subject/artificial-intelligence-0" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="MIT opencourseware deep learning artificial intelligence">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="flask-conical"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">MIT</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">MIT OpenCourseWare · AI &amp; ML</div>
+              <div class="card-source">MIT</div>
+            </div>
+            <p class="card-desc">Vast library of MIT's actual course materials. Includes 6.034 AI, 6.036 Intro to Machine Learning, lecture notes, and exams.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Notes + Video</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://ocw.mit.edu/search/?q=artificial+intelligence" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Advanced" data-keywords="stanford NLP natural language processing cs224n">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="message-square"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Stanford</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS224N · NLP with Deep Learning</div>
+              <div class="card-source">Stanford University</div>
+            </div>
+            <p class="card-desc">Word vectors, LSTMs, transformers, BERT, GPT, and large language models. The definitive NLP course.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Slides + Notes</span>
+                <span class="card-meta-item"><i data-lucide="microscope"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://web.stanford.edu/class/cs224n/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Advanced" data-keywords="stanford reinforcement learning cs234">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="gamepad-2"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-univ">Stanford</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">CS234 · Reinforcement Learning</div>
+              <div class="card-source">Stanford University</div>
+            </div>
+            <p class="card-desc">Markov decision processes, policy gradient, Q-learning, and deep RL. Full slide decks and assignments available.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Full Course</span>
+                <span class="card-meta-item"><i data-lucide="microscope"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://web.stanford.edu/class/cs234/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── Industry & Labs ──────────── -->
+      <section class="section" id="industry" data-category="industry">
+        <div class="section-header">
+          <h2 class="section-title"><i data-lucide="building-2"></i> Industry &amp; Labs</h2>
+          <span class="section-count">7 resources</span>
+        </div>
+        <div class="section-divider"></div>
+        <div class="card-grid">
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="anthropic claude AI fluency prompt engineering">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="sparkles"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free + Cert</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Anthropic Academy</div>
+              <div class="card-source">Anthropic</div>
+            </div>
+            <p class="card-desc">10+ courses covering AI Fluency, prompt engineering, Claude API, MCP, and building effective AI agents. Free certificates included.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Interactive</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://anthropic.skilljar.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="deeplearning.ai short courses LLM agents hugging face">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="satellite"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">DeepLearning.AI Short Courses</div>
+              <div class="card-source">DeepLearning.AI · Andrew Ng</div>
+            </div>
+            <p class="card-desc">1–4 hour micro-courses on LangChain, LLM fine-tuning, open-source models (Hugging Face), RAG, agents, and more.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="video"></i><i data-lucide="file-text"></i> Hybrid</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://www.deeplearning.ai/short-courses/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="hugging face NLP transformers LLM course free">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="heart-handshake"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Hugging Face LLM Course</div>
+              <div class="card-source">Hugging Face</div>
+            </div>
+            <p class="card-desc">Learn transformers, fine-tuning, and deploying models using Hugging Face's ecosystem. No ads, fully free, community-driven.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Interactive</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://huggingface.co/learn/llm-course/chapter1/1" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="google AI professional certificate fundamentals gemini">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="award"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free Trial</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Google AI Professional Certificate</div>
+              <div class="card-source">Google · Grow with Google</div>
+            </div>
+            <p class="card-desc">AI fundamentals, brainstorming with AI, data analysis, content creation. 3 months free hands-on practice.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Course</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://grow.google/certificates/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="fast.ai practical deep learning coders pytorch">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="zap"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Practical Deep Learning for Coders</div>
+              <div class="card-source">fast.ai · Jeremy Howard</div>
+            </div>
+            <p class="card-desc">Top-down approach to deep learning. Computer vision, NLP, tabular data. Built on PyTorch and fastai. Highly practical.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="video"></i><i data-lucide="file-text"></i> Hybrid</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://course.fast.ai/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="openai building agents guide prompt engineering">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="leaf"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Building Effective Agents</div>
+              <div class="card-source">Anthropic Research</div>
+            </div>
+            <p class="card-desc">Anthropic's definitive guide on designing reliable, production-ready AI agents. Covers orchestration, tool use, and evaluation.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Guide</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="linkedin learning AI courses microsoft skill pathways">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="briefcase"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free Paths</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">LinkedIn AI Skill Pathways</div>
+              <div class="card-source">LinkedIn · Microsoft</div>
+            </div>
+            <p class="card-desc">27+ unlocked AI Skill Pathways with over 150 professional certificates. Covers AI for business, coding, and data roles.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="video"></i> Video + Quiz</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://www.linkedin.com/learning/topics/artificial-intelligence" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── Newsletters ────────────────── -->
+      <section class="section" id="newsletters" data-category="newsletters">
+        <div class="section-header">
+          <h2 class="section-title"><i data-lucide="rss"></i> Newsletters &amp; Practitioner Guides</h2>
+          <span class="section-count">4 resources</span>
+        </div>
+        <div class="section-divider"></div>
+        <div class="card-grid">
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="ruben hassid how to AI newsletter substack practical weekly">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="mail"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">How to AI · Newsletter</div>
+              <div class="card-source">Ruben Hassid · Substack</div>
+            </div>
+            <p class="card-desc">519k+ subscribers. Twice-weekly step-by-step AI workflows with screenshots — practical, non-sponsored, and useful the same day you read it.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Newsletter</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://ruben.substack.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="ruben hassid free AI courses stop paying curated resources guide">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="bookmark"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Stop Paying for AI Courses</div>
+              <div class="card-source">Ruben Hassid · How to AI</div>
+            </div>
+            <p class="card-desc">A curated list of the best free AI guides covering the 20% that matters most — ChatGPT basics, Perplexity, Sora, and more, all free.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Curated List</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://ruben.substack.com/p/free" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Beginner" data-keywords="ruben hassid claude for dummies beginner guide substack">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="book-marked"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Claude for Dummies</div>
+              <div class="card-source">Ruben Hassid · How to AI</div>
+            </div>
+            <p class="card-desc">His most-shared post ever (2k+ shares). A plain-language intro to Claude — what it is, how to use it, and why it matters. No jargon.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Guide</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://ruben.substack.com/p/claude-for-dummies" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="material" data-level="Intermediate" data-keywords="ruben hassid train chatgpt custom AI fine tuning substack">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="cpu"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-material">Material</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">How to Train Your Own ChatGPT</div>
+              <div class="card-source">Ruben Hassid · How to AI</div>
+            </div>
+            <p class="card-desc">Step-by-step walkthrough for training a custom AI model on your own data. Screenshots included, no coding background required.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="file-text"></i> Guide</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://ruben.substack.com/p/how-to-train-your-own-chatgpt" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── Video Resources ──────────── -->
+      <section class="section" id="videos" data-category="videos">
+        <div class="section-header">
+          <h2 class="section-title"><i data-lucide="play"></i> Video Channels &amp; Lectures</h2>
+          <span class="section-count">8 resources</span>
+        </div>
+        <div class="section-divider"></div>
+        <div class="card-grid">
+
+          <div class="card" data-type="video" data-level="Beginner" data-keywords="3blue1brown neural networks math visualizations youtube">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="sigma"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">3Blue1Brown · Neural Networks</div>
+              <div class="card-source">YouTube · Grant Sanderson</div>
+            </div>
+            <p class="card-desc">Stunning mathematical visualizations explaining backpropagation, transformers, and attention. The clearest intro to the math of neural nets.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Advanced" data-keywords="andrej karpathy neural networks zero to hero GPT youtube">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="bird"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Neural Networks: Zero to Hero</div>
+              <div class="card-source">YouTube · Andrej Karpathy</div>
+            </div>
+            <p class="card-desc">Build GPT from scratch. Karpathy's legendary series walking through backprop, MLP, RNNs, and transformers with code.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="microscope"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Beginner" data-keywords="statquest josh starmer machine learning statistics youtube">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="bar-chart-2"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">StatQuest with Josh Starmer</div>
+              <div class="card-source">YouTube</div>
+            </div>
+            <p class="card-desc">Stats and ML made surprisingly accessible. The best channel for understanding algorithms from first principles with clear visuals.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/@statquest" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Advanced" data-keywords="two minute papers AI research papers deep learning youtube">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="newspaper"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Two Minute Papers</div>
+              <div class="card-source">YouTube · Károly Zsolnai-Fehér</div>
+            </div>
+            <p class="card-desc">Breaks down the latest AI and ML research in a few minutes per video. 1.7M+ subscribers. Great for staying current.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="microscope"></i> Advanced</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/@TwoMinutePapers" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Intermediate" data-keywords="krish naik machine learning python youtube tutorials">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="code-2"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Krish Naik · ML &amp; AI</div>
+              <div class="card-source">YouTube</div>
+            </div>
+            <p class="card-desc">Practical Python-focused ML tutorials covering scikit-learn, TensorFlow, NLP, and end-to-end project walkthroughs.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/@krishnaik06" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Beginner" data-keywords="AI explained youtube GPT large language models latest news">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="lightbulb"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">AI Explained</div>
+              <div class="card-source">YouTube</div>
+            </div>
+            <p class="card-desc">Covers the latest LLM releases, benchmark results, and industry news in a clear, non-hype style. Great for staying informed.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> Beginner</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/@aiexplained-official" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Intermediate" data-keywords="ML youtube courses github dair-ai curated list">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="tv"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">ML YouTube Courses (curated)</div>
+              <div class="card-source">GitHub · dair-ai</div>
+            </div>
+            <p class="card-desc">Curated list of the latest machine learning courses on YouTube — NLP, computer vision, reinforcement learning, and more.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="list"></i> YouTube List</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://github.com/dair-ai/ML-YouTube-Courses" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="video" data-level="Intermediate" data-keywords="fast.ai jeremy howard practical deep learning youtube lecture">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="zap"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-video">Video</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Practical Deep Learning · Video Lectures</div>
+              <div class="card-source">YouTube · fast.ai</div>
+            </div>
+            <p class="card-desc">Full lecture recordings for fast.ai's Practical Deep Learning course. Complement the written materials with live coding sessions.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="play-circle"></i> YouTube</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://www.youtube.com/watch?v=8SF_h3xF3cE&list=PLfYUBJiXbdtSvpQjSnJJ_PmDQB_VyT5iU" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ── AI Tooling ────────────────── -->
+      <section class="section" id="tooling" data-category="tooling">
+        <div class="section-header">
+          <h2 class="section-title"><i data-lucide="wrench"></i> AI Tooling</h2>
+          <span class="section-count">10 resources</span>
+        </div>
+        <div class="section-divider"></div>
+        <div class="card-grid">
+
+          <div class="card" data-type="tool" data-level="Beginner" data-keywords="cursor AI code editor IDE autocompletion">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="mouse-pointer-2"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Cursor</div>
+              <div class="card-source">Anysphere</div>
+            </div>
+            <p class="card-desc">AI-first code editor. Inline completions, chat with your codebase, multi-file edits. Fastest-growing dev tool of 2025.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="zap"></i> IDE</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://cursor.com" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Beginner" data-keywords="claude anthropic AI assistant chat API">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="sparkles"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Claude</div>
+              <div class="card-source">Anthropic</div>
+            </div>
+            <p class="card-desc">AI assistant strong in reasoning, coding, writing, and document analysis. Claude 3.5+ models available free on claude.ai.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="bot"></i> Assistant</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://claude.ai" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Beginner" data-keywords="google AI studio gemini API free developers">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="scan-search"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Google AI Studio</div>
+              <div class="card-source">Google</div>
+            </div>
+            <p class="card-desc">Fast API access to Gemini models for developers and researchers. Prototype, test, and build with generous free limits.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="settings-2"></i> API</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://aistudio.google.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Intermediate" data-keywords="hugging face hub models datasets spaces free">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="package"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Hugging Face Hub</div>
+              <div class="card-source">Hugging Face</div>
+            </div>
+            <p class="card-desc">The GitHub of ML. 500k+ models, datasets, and Spaces for demos. Free to host, share, and run open-source models.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="database"></i> Model Hub</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://huggingface.co/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Intermediate" data-keywords="windsurf AI code editor agentic IDE autocompletion free">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="waves"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Windsurf</div>
+              <div class="card-source">Codeium</div>
+            </div>
+            <p class="card-desc">Agentic IDE with unlimited autocomplete, multi-file edits, and 70+ language support. No monthly cap for individuals.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="zap"></i> IDE</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://codeium.com/windsurf" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Intermediate" data-keywords="replicate API models image generation run inference">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="refresh-cw"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Pay-as-go</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Replicate</div>
+              <div class="card-source">Replicate</div>
+            </div>
+            <p class="card-desc">Run open-source ML models via API. Great for experimentation — image generation, video, audio, and LLMs in one place.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="settings-2"></i> API</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://replicate.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Beginner" data-keywords="perplexity search AI research web real-time">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="search"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Perplexity AI</div>
+              <div class="card-source">Perplexity AI</div>
+            </div>
+            <p class="card-desc">AI-powered search with cited sources. Excellent for research, staying current on AI news, and quickly summarizing topics.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="search"></i> Search</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://perplexity.ai/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Intermediate" data-keywords="n8n automation workflow AI agents no-code">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="workflow"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Self-host</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">n8n</div>
+              <div class="card-source">n8n GmbH</div>
+            </div>
+            <p class="card-desc">Open-source workflow automation. Build AI agents and LLM pipelines visually. Self-host free or use cloud with a free trial.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="bot"></i> Automation</span>
+                <span class="card-meta-item"><i data-lucide="trending-up"></i> Intermediate</span>
+              </div>
+              <a class="card-link" href="https://n8n.io/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Beginner" data-keywords="chatgpt openai assistant GPT free chat">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="message-circle"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">ChatGPT</div>
+              <div class="card-source">OpenAI</div>
+            </div>
+            <p class="card-desc">World's most widely used AI assistant. GPT-4o free on web with browsing, image input, and code interpreter included.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="bot"></i> Assistant</span>
+                <span class="card-meta-item"><i data-lucide="sprout"></i> All Levels</span>
+              </div>
+              <a class="card-link" href="https://chatgpt.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="card" data-type="tool" data-level="Advanced" data-keywords="tabnine code completion IDE free AI programming">
+            <div class="card-top">
+              <div class="card-logo"><i data-lucide="layout-grid"></i></div>
+              <div class="card-badges">
+                <span class="badge badge-tool">Tool</span>
+                <span class="badge badge-free">Free Tier</span>
+              </div>
+            </div>
+            <div>
+              <div class="card-title">Tabnine</div>
+              <div class="card-source">Tabnine</div>
+            </div>
+            <p class="card-desc">AI coding assistant with free tier. Privacy-first option — can run locally. Supports all major IDEs and 30+ languages.</p>
+            <div class="card-footer">
+              <div class="card-meta">
+                <span class="card-meta-item"><i data-lucide="zap"></i> Code Assist</span>
+                <span class="card-meta-item"><i data-lucide="laptop"></i> Dev</span>
+              </div>
+              <a class="card-link" href="https://www.tabnine.com/" target="_blank" rel="noopener">
+                Visit <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState" style="display:none;">
+        <i data-lucide="search-x"></i>
+        <p class="empty-state-text">No resources match your search. Try different keywords.</p>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer">
+      <span class="footer-text">AI Resource Portal · Curated April 2026 · Free resources from Stanford, MIT, Harvard, Anthropic &amp; more</span>
+      <div class="footer-links">
+        <a href="https://online.stanford.edu/artificial-intelligence/free-content" target="_blank">Stanford AI Free</a>
+        <a href="https://pll.harvard.edu/subject/artificial-intelligence-0" target="_blank">Harvard AI</a>
+        <a href="https://deeplearning.ai/short-courses/" target="_blank">DeepLearning.AI</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Initialise Lucide icons ────────────────────────────
+  lucide.createIcons();
+
+  // ── Filter logic ──────────────────────────────────────
+  let activeFilter = 'all';
+  let activeSearch = '';
+  let activeLevelFilter = '';
+
+  function setFilter(type, btn) {
+    activeFilter = type;
+    activeLevelFilter = '';
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    applyFilters();
+  }
+
+  function setLevelFilter(level) {
+    activeLevelFilter = activeLevelFilter === level ? '' : level;
+    applyFilters();
+  }
+
+  function doSearch(val) {
+    activeSearch = val.toLowerCase().trim();
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const type     = card.dataset.type     || '';
+      const keywords = card.dataset.keywords || '';
+      const level    = card.dataset.level    || '';
+      const title    = card.querySelector('.card-title')?.textContent.toLowerCase()  || '';
+      const source   = card.querySelector('.card-source')?.textContent.toLowerCase() || '';
+      const desc     = card.querySelector('.card-desc')?.textContent.toLowerCase()   || '';
+
+      const typeMatch   = activeFilter === 'all' || type === activeFilter;
+      const levelMatch  = !activeLevelFilter || level === activeLevelFilter;
+      const searchStr   = keywords + ' ' + title + ' ' + source + ' ' + desc;
+      const searchMatch = !activeSearch || searchStr.includes(activeSearch);
+
+      const visible = typeMatch && levelMatch && searchMatch;
+      card.hidden = !visible;
+      if (visible) visibleCount++;
+    });
+
+    document.querySelectorAll('.section').forEach(section => {
+      section.hidden = section.querySelectorAll('.card:not([hidden])').length === 0;
+    });
+
+    document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  // ── Smooth scroll ─────────────────────────────────────
+  function scrollTo(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+</body>
+</html>
