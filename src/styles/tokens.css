@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
   --of-magenta-50: #fff0f7;
   --of-magenta-300: #f53fa5;
   --of-magenta-400: #d11a82;
@@ -63,6 +63,39 @@
 
   --of-dur-fast: 120ms;
   --of-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Dark mode token overrides ─────────────────────────────────────────── */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --of-bg-base: #0e0c12;
+  --of-bg-elevated: #1a1720;
+  --of-bg-recessed: #110f17;
+  --of-bg-surface: #1a1720;
+  --of-bg-brand: var(--of-magenta-500);
+  --of-bg-brand-tint: color-mix(in srgb, var(--of-magenta-600) 25%, transparent);
+  --of-bg-success-tint: color-mix(in srgb, var(--of-success-500) 18%, transparent);
+  --of-bg-warning-tint: color-mix(in srgb, var(--of-warning-500) 18%, transparent);
+  --of-bg-danger-tint: color-mix(in srgb, var(--of-danger-500) 18%, transparent);
+  --of-bg-info-tint: color-mix(in srgb, var(--of-info-500) 18%, transparent);
+
+  --of-fg-default: #f2eef5;
+  --of-fg-base: #f2eef5;
+  --of-fg-muted: #a89cb0;
+  --of-fg-subtle: #6e607a;
+  --of-fg-on-brand: #ffffff;
+  --of-fg-brand: var(--of-magenta-300);
+  --of-fg-success: #52c99a;
+  --of-fg-warning: #e6a84a;
+  --of-fg-danger: #f26880;
+  --of-fg-info: #7b93fa;
+
+  --of-border-line: rgba(255, 255, 255, 0.09);
+  --of-border-brand: var(--of-magenta-400);
+
+  --of-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --of-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 * {

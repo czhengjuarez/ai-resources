@@ -10,6 +10,39 @@
     var(--of-bg-base);
 }
 
+[data-theme='dark'] .portal-shell {
+  background:
+    radial-gradient(1200px 420px at 10% -20%, color-mix(in srgb, var(--of-magenta-600) 18%, transparent), transparent 70%),
+    var(--of-bg-base);
+}
+
+/* ── Dark mode toggle button ─────────────────────────────────────────────── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--of-border-line);
+  background: var(--of-bg-elevated);
+  color: var(--of-fg-muted);
+  cursor: pointer;
+  transition: color var(--of-dur-fast), background var(--of-dur-fast), border-color var(--of-dur-fast);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  color: var(--of-fg-brand);
+  border-color: var(--of-border-brand);
+  background: var(--of-bg-brand-tint);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--of-ring);
+}
+
 .portal-header {
   position: sticky;
   top: 0;
@@ -133,6 +166,14 @@
   color: var(--of-fg-subtle);
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.search-spinner {
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
 .section-block {
   margin-top: 28px;
 }
@@ -204,13 +245,43 @@
 }
 
 .visit-link {
-  margin-top: auto;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   color: var(--of-fg-brand);
   font-weight: 600;
   text-decoration: none;
+}
+
+/* ── Resource vote button ────────────────────────────────────────────────── */
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--of-border-line);
+  background: transparent;
+  color: var(--of-fg-subtle);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  line-height: 1;
+}
+.vote-btn:hover {
+  color: var(--of-fg-brand);
+  border-color: var(--of-fg-brand);
+  background: color-mix(in srgb, var(--of-fg-brand) 8%, transparent);
+}
+.vote-btn[data-voted='true'] {
+  color: #e0405e;
+  border-color: color-mix(in srgb, #e0405e 40%, transparent);
+  background: color-mix(in srgb, #e0405e 10%, transparent);
+}
+.vote-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
 
 .empty-state {
@@ -272,6 +343,390 @@
   line-height: 1.5;
 }
 
+/* ── Slide-out Prompt Panel ── */
+.slide-panel {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 320px;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  z-index: 50;
+  background: var(--of-bg-elevated);
+  border-right: 1px solid var(--of-border-line);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.slide-panel.open {
+  transform: translateX(0);
+}
+
+.slide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.slide-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--of-border-line);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--of-fg-default);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.panel-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--of-fg-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.panel-close:hover {
+  background: var(--of-bg-recessed);
+  color: var(--of-fg-default);
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.panel-section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--of-fg-brand);
+}
+
+.panel-tip {
+  font-size: 0.8rem;
+  color: var(--of-fg-muted);
+  line-height: 1.5;
+}
+
+.prompt-card {
+  background: var(--of-bg-base);
+  border: 1px solid var(--of-border-line);
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.prompt-card-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--of-fg-default);
+}
+
+.prompt-card-text {
+  font-size: 0.78rem;
+  color: var(--of-fg-muted);
+  line-height: 1.5;
+}
+
+.prompt-fill-btn {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--of-border-brand, #7c3aed);
+  background: transparent;
+  color: var(--of-fg-brand);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.prompt-fill-btn:hover {
+  background: color-mix(in srgb, var(--of-fg-brand) 10%, transparent);
+}
+
+.panel-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--of-fg-muted);
+  transition: background 0.15s, color 0.15s;
+}
+
+.panel-toggle:hover {
+  background: var(--of-bg-recessed);
+  color: var(--of-fg-brand);
+}
+
+/* ── Shared split-pane layout (browse + builder pages) ──────── */
+
+/* Shell: full-viewport flex column */
+.split-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--of-bg-base);
+}
+
+/* Body row: main content flex-1 on left, panel on right */
+.split-body {
+  display: flex;
+  flex: 1;
+  /* Allow each column to scroll independently */
+  min-height: 0;
+}
+
+/* Main/output area — scrolls independently */
+.split-main {
+  flex: 1;
+  overflow-y: auto;
+  min-width: 0;
+  padding: 2.5rem 2rem 4rem;
+}
+
+/* Right panel — sticky, slides in/out */
+.split-panel {
+  width: 320px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--of-border-line);
+  background: var(--of-bg-elevated);
+  position: sticky;
+  position: relative; /* needed for edge-tab absolute positioning */
+  top: 0;
+  height: 100vh;
+  /* overflow must be visible so edge-tab can protrude left */
+  overflow: visible;
+  /* Slide animation: collapse width to 0 */
+  transition: width 0.25s ease, opacity 0.2s ease, border-color 0.25s ease;
+}
+
+.split-panel.collapsed {
+  width: 0;
+  opacity: 1;
+  pointer-events: none;
+  border-left-width: 0;
+}
+
+/* Edge-tab toggle — always visible, sits on panel's left border */
+.panel-edge-toggle {
+  position: absolute;
+  left: -17px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--of-bg-elevated);
+  border: 1px solid var(--of-border-line);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  cursor: pointer;
+  color: var(--of-fg-muted);
+  transition: color 0.15s, background 0.15s;
+  z-index: 1;
+}
+
+.panel-edge-toggle:hover {
+  color: var(--of-fg-brand);
+  background: color-mix(in srgb, var(--of-fg-brand) 8%, var(--of-bg-elevated));
+}
+
+/* Allow edge tab to receive clicks even when panel is collapsed */
+.split-panel.collapsed .panel-edge-toggle {
+  pointer-events: auto;
+}
+
+/* Inner wrapper keeps min-width so content doesn't reflow during animation */
+.split-panel-inner {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 320px;
+  /* scroll happens here, not on the outer panel */
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+}
+
+/* Hide content (but not edge tab) when collapsed */
+.split-panel.collapsed .split-panel-inner {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ── Panel typography ─────────────────────────────────────── */
+
+.panel-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--of-fg-muted);
+  margin: 0 0 0.75rem;
+}
+
+.builder-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Example prompt cards (Course Builder panel) ─────────── */
+
+.builder-example-card {
+  border: 1px solid var(--of-border-line);
+  border-radius: 8px;
+  padding: 0.875rem;
+  background: var(--of-bg-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.builder-example-card:hover {
+  border-color: var(--of-fg-brand);
+  background: color-mix(in srgb, var(--of-fg-brand) 5%, var(--of-bg-base));
+}
+
+.builder-example-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin: 0 0 0.375rem;
+  color: var(--of-fg-default);
+}
+
+.builder-example-text {
+  font-size: 0.75rem;
+  color: var(--of-fg-muted);
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+}
+
+.builder-use-btn {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--of-fg-brand);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.builder-use-btn:hover {
+  opacity: 0.7;
+}
+
+/* ── Filter panel (Browse page) ───────────────────────────── */
+
+.filter-panel-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-panel-group .filter-actions {
+  flex-wrap: wrap;
+}
+
+.split-panel .filter-panel-group .of-btn.of-btn--sm {
+  height: 28px;
+  padding: 0 9px;
+  font-size: 11px;
+  gap: 5px;
+  border-radius: 999px;
+}
+
+/* ── Empty / loading states (output area) ─────────────────── */
+
+.split-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 5rem 2rem;
+  text-align: center;
+  color: var(--of-fg-muted);
+}
+
+.split-empty-state svg {
+  opacity: 0.3;
+}
+
+/* ── Saved plans rows ─────────────────────────────────────── */
+
+.saved-plan-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--of-border-line);
+  border-radius: 8px;
+  background: var(--of-bg-base);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.saved-plan-row:hover {
+  border-color: var(--of-fg-brand);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+
 @media (max-width: 768px) {
   .container {
     width: min(1120px, 100% - 1.5rem);
@@ -283,6 +738,62 @@
 
   .search-box {
     max-width: none;
+    width: 100%;
+  }
+
+  /* Stack columns on mobile — panel becomes slide overlay from the right */
+  .split-body {
+    display: block;
+  }
+
+  .split-main {
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .split-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: auto;
+    width: 100vw;
+    max-width: 360px;
+    height: 100vh;
+    z-index: 50;
+    border-left: 1px solid var(--of-border-line);
+    /* Start off-screen to the right */
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+  }
+
+  .split-panel.mobile-open {
+    transform: translateX(0);
+  }
+
+  /* Override desktop collapse styles on mobile */
+  .split-panel.collapsed {
+    width: 100vw;
+    max-width: 360px;
+    opacity: 1;
+    pointer-events: auto;
+    overflow-y: auto;
+    border-left-width: 1px;
+  }
+
+  /* Show full content on mobile */
+  .split-panel.collapsed .split-panel-inner {
+    display: flex;
+    width: auto;
+    padding: 1.5rem;
+    overflow: visible;
+  }
+
+  /* Hide edge tab on mobile — use header toggle or mobile backdrop instead */
+  .panel-edge-toggle {
+    display: none;
+  }
+
+  .split-panel-inner {
+    min-width: 0;
     width: 100%;
   }
 }

@@ -73,6 +73,156 @@ export const sections = [
         tags: ['Math', 'Free'],
         meta: ['Interactive', 'Beginner'],
         url: 'https://www.khanacademy.org/math'
+      },
+      {
+        title: 'CS221 · Artificial Intelligence: Principles and Techniques',
+        source: 'Stanford University',
+        description: 'Stanford\'s broad intro to AI covering ML, search, MDPs, game playing, constraint satisfaction, graphical models, and logic. Lecture videos available on YouTube.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Stanford', 'Free', 'AI'],
+        meta: ['Lecture Notes + Video', 'Intermediate'],
+        url: 'https://stanford-cs221.github.io/'
+      },
+      {
+        title: 'CS224N · Natural Language Processing with Deep Learning',
+        source: 'Stanford University',
+        description: 'Deep dive into NLP and LLMs — word vectors, transformers, BERT, GPT, RLHF, agents, and RAG. Full 2024 lecture playlist freely available on YouTube.',
+        type: 'material',
+        level: 'Advanced',
+        tags: ['Stanford', 'Free', 'NLP', 'LLM'],
+        meta: ['Video + Slides', 'Advanced'],
+        url: 'https://www.youtube.com/playlist?list=PLoROMvodv4rOaMFbaqxPDoLWjDaRAdP9D'
+      },
+      {
+        title: 'CS230 · Deep Learning',
+        source: 'Stanford University · Andrew Ng',
+        description: 'Andrew Ng\'s deep learning course at Stanford: CNNs, RNNs, optimization, and project work. Free Fall 2018 lecture videos available on YouTube. Note: the Coursera version (Deep Learning Specialization) requires a paid subscription.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Stanford', 'Free', 'Deep Learning'],
+        meta: ['Video + Notes', 'Intermediate'],
+        url: 'https://cs230.stanford.edu/'
+      },
+      {
+        title: 'CS234 · Reinforcement Learning',
+        source: 'Stanford University · Emma Brunskill',
+        description: 'Stanford\'s core RL course — MDPs, Q-learning, policy gradients, RLHF, and deep RL. Lecture videos on YouTube. Textbook is Sutton & Barto (free online).',
+        type: 'material',
+        level: 'Advanced',
+        tags: ['Stanford', 'Free', 'Reinforcement Learning'],
+        meta: ['Video + Notes', 'Advanced'],
+        url: 'https://cs234.stanford.edu/'
+      },
+      {
+        title: 'MIT 6.034 · Artificial Intelligence',
+        source: 'MIT OpenCourseWare · Patrick Winston',
+        description: 'Classic MIT undergrad AI course with full lecture videos. Covers search, constraint satisfaction, learning, neural nets, and vision — timeless foundations.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['MIT', 'Free', 'AI'],
+        meta: ['Full Video Course', 'Intermediate'],
+        url: 'https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/'
+      },
+      {
+        title: 'MIT 6.867 · Machine Learning',
+        source: 'MIT OpenCourseWare',
+        description: 'MIT graduate ML course with comprehensive lecture notes and problem sets. Covers regression, classification, SVMs, HMMs, and Bayesian networks.',
+        type: 'material',
+        level: 'Advanced',
+        tags: ['MIT', 'Free', 'Machine Learning'],
+        meta: ['Lecture Notes', 'Graduate'],
+        url: 'https://ocw.mit.edu/courses/6-867-machine-learning-fall-2006/'
+      },
+      {
+        title: 'MIT 6.S191 · Introduction to Deep Learning',
+        source: 'MIT · Alexander Amini',
+        description: 'MIT\'s intensive intro to deep learning with TensorFlow labs. Covers CNNs, RNNs, GANs, and reinforcement learning. Lectures freely available at introtodeeplearning.com.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['MIT', 'Free', 'Deep Learning'],
+        meta: ['Video + Labs', 'Intermediate'],
+        url: 'http://introtodeeplearning.com/'
+      },
+      {
+        title: 'MIT 6.036 · Introduction to Machine Learning',
+        source: 'MIT Open Learning Library',
+        description: 'MIT\'s hands-on ML course covering formulation of learning problems, supervised learning, reinforcement learning, and applications to images and temporal sequences. Fully free with no registration required.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['MIT', 'Free', 'Machine Learning'],
+        meta: ['13 weeks', '~12 hrs/week'],
+        url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about'
+      },
+      {
+        title: 'MIT 6.S087 · Foundation Models and Generative AI',
+        source: 'MIT OpenCourseWare',
+        description: 'Non-technical MIT course on how modern AI tools work — ChatGPT, DALL-E, AlphaFold, and self-supervised learning. Free lecture videos on OCW.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['MIT', 'Free', 'Generative AI', 'Foundation Models'],
+        meta: ['Video', 'IAP 2024'],
+        url: 'https://ocw.mit.edu/courses/6-s087-foundation-models-and-generative-ai-january-iap-2024/'
+      },
+      {
+        title: 'MITx · Understanding the World Through Data',
+        source: 'MITx Online',
+        description: 'Learn to use data and ML to make sense of the real world — regression, classification, and data distributions with Python. Free to audit; certificate $49.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['MIT', 'Free', 'Data Science', 'Python'],
+        meta: ['Free audit', 'Certificate $49'],
+        url: 'https://mitxonline.mit.edu/courses/course-v1:MITxT+6.UWTDx/'
+      },
+      {
+        title: 'MIT RES.6-013 · AI 101',
+        source: 'MIT OpenCourseWare',
+        description: 'Beginner-friendly MIT intro to AI concepts — participants train their own algorithm and learn how AI thinks and solves problems. Fully free on OCW.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['MIT', 'Free', 'AI', 'Beginner'],
+        meta: ['Free', 'OCW'],
+        url: 'https://ocw.mit.edu/courses/res-6-013-ai-101-fall-2021/'
+      },
+      {
+        title: 'MITx 6.86x · Machine Learning with Python',
+        source: 'MITx / edX',
+        description: 'MIT\'s comprehensive ML course — linear models, SVMs, neural networks, and reinforcement learning. Free to audit on edX; part of the MITx Statistics and Data Science MicroMasters.',
+        type: 'material',
+        level: 'Advanced',
+        tags: ['MIT', 'Free', 'Machine Learning', 'Python'],
+        meta: ['Free audit', 'Certificate $300'],
+        url: 'https://www.edx.org/learn/machine-learning/massachusetts-institute-of-technology-machine-learning-with-python-from-linear-models-to-deep-learning'
+      },
+      {
+        title: 'MIT MAS.S60 · How to AI (Almost) Anything',
+        source: 'MIT OpenCourseWare · Paul Liang',
+        description: 'Applying modern deep learning and foundation models to novel real-world modalities — vision, audio, sensors, medical data, music, art, and multimodal AI. Spring 2025.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['MIT', 'Free', 'Multimodal AI', 'Foundation Models'],
+        meta: ['Lecture Notes', 'Spring 2025'],
+        url: 'https://ocw.mit.edu/courses/mas-s60-how-to-ai-almost-anything-spring-2025/'
+      },
+      {
+        title: 'MIT 6.S062 · Generative AI in K–12 Education',
+        source: 'MIT OpenCourseWare',
+        description: 'Explores how generative AI tools affect K–12 curricula and teaching — project-based, covering ethics, implications, and hands-on experimentation. Fully free on OCW.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['MIT', 'Free', 'Generative AI', 'Education'],
+        meta: ['Free', 'OCW 2023'],
+        url: 'https://ocw.mit.edu/courses/6-s062-generative-artificial-intelligence-in-k12-education-fall-2023/'
+      },
+      {
+        title: 'MIT 6.006 · Introduction to Algorithms',
+        source: 'MIT OpenCourseWare',
+        description: 'MIT\'s foundational algorithms course — data structures, sorting, graph algorithms, dynamic programming, and performance analysis. The logic behind fast and smart AI systems.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['MIT', 'Free', 'Algorithms', 'Computer Science'],
+        meta: ['Video + Problem Sets', 'Spring 2020'],
+        url: 'https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/'
       }
     ]
   },
@@ -84,7 +234,7 @@ export const sections = [
       {
         title: 'DeepLearning.AI Short Courses',
         source: 'DeepLearning.AI',
-        description: 'Hands-on AI courses on prompting, RAG, agents, and production LLM development.',
+        description: 'Hands-on short courses on prompting, RAG, agents, and production LLM development. Short courses on deeplearning.ai are free. Longer specializations offered via Coursera require a paid subscription.',
         type: 'material',
         level: 'Beginner',
         tags: ['Industry', 'Free'],
@@ -154,10 +304,10 @@ export const sections = [
       {
         title: 'Coursera AI & ML Courses',
         source: 'Coursera',
-        description: 'University-level AI and ML courses from Stanford, DeepLearning.AI, Google, and others. Strong for structured learning paths and recognized certificates.',
+        description: 'University-level AI and ML courses from Stanford, DeepLearning.AI, Google, and others. Most courses can be audited for free (no certificate). Certificates and graded assignments require a paid subscription (~$49/month or per-course fee).',
         type: 'material',
         level: 'Beginner',
-        tags: ['University', 'Certificates'],
+        tags: ['University', 'Freemium', 'Certificates', 'Paid for certificate'],
         meta: ['Course Platform', 'Beginner'],
         url: 'https://www.coursera.org/search?query=machine+learning'
       },
@@ -220,6 +370,126 @@ export const sections = [
         tags: ['Directory', 'Free', 'Open Source'],
         meta: ['Curated List', 'All Levels'],
         url: 'https://github.com/josephmisiti/awesome-machine-learning'
+      },
+      {
+        title: 'How to AI · Ruben Hassid',
+        source: 'Ruben Hassid · Substack',
+        description: 'Weekly practical AI workflow guides — exact prompts, screenshots, and step-by-step walkthroughs for Claude, ChatGPT, and AI tools. 528K+ subscribers, free to read. Great for non-technical practitioners.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['Newsletter', 'Free', 'Practical', 'Prompting', 'Team Pick'],
+        meta: ['Weekly newsletter', 'Beginner-friendly'],
+        url: 'https://rubenhassid.substack.com/'
+      },
+      {
+        title: 'Claude 101',
+        source: 'Anthropic',
+        description: 'Foundational course covering core Claude features and how to use Claude effectively for everyday work tasks. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['Anthropic', 'Free', 'Claude'],
+        meta: ['Course', 'Beginner'],
+        url: 'https://anthropic.skilljar.com/claude-101'
+      },
+      {
+        title: 'Claude Code 101',
+        source: 'Anthropic',
+        description: 'Learn how to use Claude Code in your daily development workflow. Covers setup, core commands, and practical coding assistance. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['Anthropic', 'Free', 'Claude', 'Coding'],
+        meta: ['Course', 'Beginner'],
+        url: 'https://anthropic.skilljar.com/claude-code-101'
+      },
+      {
+        title: 'AI Fluency: Framework & Foundations',
+        source: 'Anthropic',
+        description: 'Learn to collaborate with AI effectively, ethically, and safely. Covers the foundational framework for AI fluency in professional settings. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['Anthropic', 'Free', 'AI Literacy', 'Ethics'],
+        meta: ['Course', 'Beginner'],
+        url: 'https://anthropic.skilljar.com/ai-fluency-framework-foundations'
+      },
+      {
+        title: 'AI Capabilities and Limitations',
+        source: 'Anthropic',
+        description: 'Introductory course explaining how AI models work, what they can and cannot do, and how to use them responsibly. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Beginner',
+        tags: ['Anthropic', 'Free', 'AI Literacy'],
+        meta: ['Course', 'Beginner'],
+        url: 'https://anthropic.skilljar.com/ai-capabilities-and-limitations'
+      },
+      {
+        title: 'Building with the Claude API',
+        source: 'Anthropic',
+        description: 'Full-spectrum course on working with the Claude API: authentication, messages, streaming, tool use, and prompt engineering patterns. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'Claude', 'API', 'Developers'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/claude-with-the-anthropic-api'
+      },
+      {
+        title: 'Introduction to Model Context Protocol',
+        source: 'Anthropic',
+        description: 'Learn to build MCP servers and clients — including tools, resources, and prompts — using Python. Hands-on introduction to the open standard for AI-tool integration. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'MCP', 'Developers', 'Agentic'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/introduction-to-model-context-protocol'
+      },
+      {
+        title: 'Model Context Protocol: Advanced Topics',
+        source: 'Anthropic',
+        description: 'Deep dive into advanced MCP patterns: sampling, notifications, file system integration, and custom transports. For developers building production MCP systems. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Advanced',
+        tags: ['Anthropic', 'Free', 'MCP', 'Developers', 'Agentic'],
+        meta: ['Course', 'Advanced'],
+        url: 'https://anthropic.skilljar.com/model-context-protocol-advanced-topics'
+      },
+      {
+        title: 'Introduction to Agent Skills',
+        source: 'Anthropic',
+        description: 'Learn to build, configure, and share Skills in Claude Code — reusable capabilities that extend Claude\'s ability to take actions. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'Agents', 'Claude', 'Coding'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/introduction-to-agent-skills'
+      },
+      {
+        title: 'Introduction to Subagents',
+        source: 'Anthropic',
+        description: 'Learn to use and create sub-agents in Claude Code — composing multi-agent systems where agents delegate to specialized sub-agents. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'Agents', 'Claude', 'Agentic'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/introduction-to-subagents'
+      },
+      {
+        title: 'Claude with Amazon Bedrock',
+        source: 'Anthropic',
+        description: 'Full course for working with Claude through AWS Bedrock: setup, API calls, streaming, and production patterns on Amazon\'s managed AI platform. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'Claude', 'AWS', 'Cloud'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/claude-in-amazon-bedrock'
+      },
+      {
+        title: "Claude with Google Cloud's Vertex AI",
+        source: 'Anthropic',
+        description: 'Learn to work with Claude through Google Cloud Vertex AI: authentication, API integration, and practical usage on GCP. Free, requires Skilljar account.',
+        type: 'material',
+        level: 'Intermediate',
+        tags: ['Anthropic', 'Free', 'Claude', 'Google Cloud', 'Cloud'],
+        meta: ['Course', 'Intermediate'],
+        url: 'https://anthropic.skilljar.com/claude-with-google-vertex'
       }
     ]
   },
@@ -408,10 +678,10 @@ export const sections = [
       {
         title: 'n8n',
         source: 'n8n',
-        description: 'Automation platform to build AI workflows, data pipelines, and agent-based processes.',
+        description: 'Automation platform to build AI workflows, data pipelines, and agent-based processes. Free and open source when self-hosted. Cloud-hosted version (n8n.io) has a paid subscription.',
         type: 'tool',
         level: 'Intermediate',
-        tags: ['Automation', 'Open Source'],
+        tags: ['Automation', 'Open Source', 'Free to self-host'],
         meta: ['Automation', 'Intermediate'],
         url: 'https://n8n.io/'
       },
@@ -486,12 +756,12 @@ export const sections = [
         url: 'https://aistudio.google.com/'
       },
       {
-        title: 'Replit AI',
+        title: 'Replit',
         source: 'Replit',
-        description: 'AI-assisted coding environment in the browser. Good for building, debugging, and deploying small projects without local setup.',
+        description: 'Browser-based coding environment good for building and deploying small projects without local setup. Basic Replit is free. AI coding features (Replit Agent, AI completions) require a paid Core subscription (~$25/month).',
         type: 'tool',
         level: 'Beginner',
-        tags: ['Coding', 'Free Tier'],
+        tags: ['Coding', 'Freemium', 'AI features require paid plan'],
         meta: ['Dev Tool', 'Beginner'],
         url: 'https://replit.com/'
       },

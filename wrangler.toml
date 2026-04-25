@@ -15,3 +15,11 @@ database_id = "305b18c1-f6e2-4134-918f-631772cfa0aa"
 
 [ai]
 binding = "AI"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "ai-resources-search"
+
+[triggers]
+crons = ["0 9 * * 1"]
+
