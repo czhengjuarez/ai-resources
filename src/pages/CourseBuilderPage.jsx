@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   BookOpen,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   MessageSquare,
@@ -18,6 +19,19 @@ import {
 
 const STORAGE_KEY = 'ai-course-builder-plans';
 const MAX_SAVED = 10;
+const SECTIONS_KEY = 'ai-course-builder-panel-sections';
+
+function loadSectionState() {
+  try {
+    const v = JSON.parse(localStorage.getItem(SECTIONS_KEY) || 'null');
+    if (v && typeof v === 'object') return v;
+  } catch {}
+  return null;
+}
+
+function persistSectionState(s) {
+  try { localStorage.setItem(SECTIONS_KEY, JSON.stringify(s)); } catch {}
+}
 
 function loadSavedPlans() {
   try {
@@ -27,11 +41,19 @@ function loadSavedPlans() {
   }
 }
 
+function defaultTitle(form) {
+  const g = (form.goal || '').trim();
+  if (!g) return `Plan · ${form.duration}`;
+  const short = g.length > 60 ? `${g.slice(0, 57)}…` : g;
+  return short;
+}
+
 function savePlan(form, result) {
   const plans = loadSavedPlans();
   const entry = {
     id: Date.now(),
     savedAt: new Date().toISOString(),
+    title: (form.title && form.title.trim()) || defaultTitle(form),
     background: form.background,
     goal: form.goal,
     duration: form.duration,
@@ -48,7 +70,7 @@ function deletePlan(id) {
   return plans;
 }
 
-const DURATIONS = ['1 day', '3 days', '1 week', '2 weeks', '1 month'];
+const DURATIONS = ['1 day', '3 days', '1 week', '2 weeks', '1 month', '3 months'];
 
 const EXAMPLES = [
   {
@@ -79,7 +101,184 @@ const EXAMPLES = [
 
 const badgeVariantByType = { material: 'purple', video: 'amber', tool: 'green' };
 
+function normalizePlanResult(result, duration) {
+  const durationDaysMap = { '1 day': 1, '3 days': 3, '1 week': 5, '2 weeks': 10, '1 month': 20 };
+  const durationHoursMap = { '1 day': 8, '3 days': 24, '1 week': 40, '2 weeks': 80, '1 month': 160 };
+  const numDays = durationDaysMap[duration] || 5;
+  const totalBudget = durationHoursMap[duration] || 40;
+  const dayMax = 8;
+  const levelRank = { Beginner: 1, Intermediate: 2, Advanced: 3 };
+
+  const rawPlan = Array.isArray(result?.plan) ? result.plan : [];
+  const hasSessionMetadata = rawPlan.some((period) =>
+    (period.resources || []).some((resource) =>
+      resource.sessionHours != null || resource.originalHours != null
+    )
+  );
+
+  // If backend already provided session-aware scheduling metadata,
+  // keep it as-is to avoid double-compressing long courses.
+  if (hasSessionMetadata) {
+    return result;
+  }
+
+  const focusByKey = {};
+  const orderedResources = [];
+  const seen = new Set();
+
+  for (const period of rawPlan) {
+    for (const resource of period.resources || []) {
+      const key = resource.url || resource.id || resource.title;
+      if (!focusByKey[key] && period.focus) {
+        focusByKey[key] = period.focus;
+      }
+      if (seen.has(key)) continue;
+      seen.add(key);
+      orderedResources.push(resource);
+    }
+  }
+
+  const sessions = [];
+  const deferredTitles = [];
+  for (const resource of orderedResources) {
+    const key = resource.url || resource.id || resource.title;
+    const hours = resource.hours;
+    const originalHours = hours == null ? null : Math.max(1, Number(hours));
+
+    const remainingBudget = totalBudget - sessions.reduce((sum, s) => sum + s.sessionHours, 0);
+    if (originalHours != null && originalHours > 10 && remainingBudget < 8) {
+      deferredTitles.push(resource.title);
+      continue;
+    }
+
+    if (hours == null) {
+      sessions.push({ key, sessionHours: 2, originalHours: null, resource, openEnded: true });
+      continue;
+    }
+
+    let remaining = originalHours;
+    while (remaining > 0) {
+      let chunk;
+      if (remaining <= dayMax) {
+        chunk = remaining;
+      } else if (remaining <= 12) {
+        chunk = Math.ceil(remaining / 2);
+      } else {
+        chunk = dayMax;
+      }
+      sessions.push({ key, sessionHours: chunk, originalHours, resource, openEnded: false });
+      remaining -= chunk;
+    }
+  }
+
+  let used = 0;
+  const bounded = [];
+  for (const s of sessions) {
+    if (used + s.sessionHours > totalBudget) break;
+    bounded.push(s);
+    used += s.sessionHours;
+  }
+
+  const days = Array.from({ length: numDays }, (_, i) => ({
+    period: `Day ${i + 1}`,
+    focus: '',
+    notes: '',
+    resources: [],
+    resourceIds: [],
+    plannedHours: 0,
+  }));
+
+  for (const session of bounded) {
+    let target = 0;
+    for (let i = 1; i < days.length; i++) {
+      if (days[i].plannedHours < days[target].plannedHours) {
+        target = i;
+      }
+    }
+
+    const day = days[target];
+    const key = session.key;
+    day.resources.push({
+      ...session.resource,
+      hours: session.sessionHours,
+      sessionHours: session.sessionHours,
+      originalHours: session.originalHours,
+      partial: session.originalHours != null && session.sessionHours < session.originalHours,
+    });
+    day.resourceIds.push(key);
+    day.plannedHours += session.sessionHours;
+    if (!day.focus) {
+      day.focus = focusByKey[key] || 'Focused learning';
+    }
+  }
+
+  const plan = days
+    .filter((d) => d.resources.length > 0)
+    .map((d) => ({
+      period: d.period,
+      focus: d.focus,
+      notes: `Plan ~${d.plannedHours}h today (ideal range: 4-8h). Difficulty: ${d.resources.reduce((acc, r) => {
+        const rank = levelRank[r.level] || 1;
+        return rank > acc.rank ? { rank, label: r.level } : acc;
+      }, { rank: 1, label: 'Beginner' }).label}.`,
+      resourceIds: d.resourceIds,
+      resources: d.resources,
+    }));
+
+  const beyondNote = deferredTitles.length > 0
+    ? ` Beyond this plan: ${[...new Set(deferredTitles)].slice(0, 3).join(', ')}${deferredTitles.length > 3 ? '…' : ''}.`
+    : '';
+
+  const summary = `${result?.summary || 'Personalized plan generated.'} Sustainable pacing applied (~${used}h total, 4-8h/day target).${beyondNote}`;
+
+  return { ...result, plan, summary };
+}
+
+function AccordionHeader({ label, open, onToggle, badge }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-expanded={open}
+      style={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '0.5rem',
+        padding: '0.5rem 0',
+        marginBottom: open ? '0.75rem' : 0,
+        background: 'none',
+        border: 'none',
+        borderBottom: '1px solid var(--of-border-line)',
+        cursor: 'pointer',
+        color: 'var(--of-fg-default)',
+        textAlign: 'left',
+        font: 'inherit',
+      }}
+    >
+      <span className="panel-section-title" style={{ margin: 0 }}>{label}</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+        {badge != null && (
+          <span className={badgeClass({ variant: 'default' })}>{badge}</span>
+        )}
+        <ChevronDown
+          size={14}
+          style={{
+            transition: 'transform 0.15s ease',
+            transform: open ? 'rotate(0deg)' : 'rotate(-90deg)',
+            color: 'var(--of-fg-muted)',
+          }}
+        />
+      </span>
+    </button>
+  );
+}
+
 function ResourceCard({ resource }) {
+  const todayHours = resource.sessionHours ?? resource.hours ?? null;
+  const totalHours = resource.originalHours ?? null;
+
   return (
     <article className={cardClass({ className: 'resource-card' })}>
       <div className="card-top-row">
@@ -89,6 +288,35 @@ function ResourceCard({ resource }) {
         <span className={badgeClass({ variant: 'default' })}>{resource.level}</span>
       </div>
       <h3>{resource.title}</h3>
+      {resource.scheduleSpanLabel && (
+        <p style={{ fontSize: '0.7rem', color: 'var(--of-fg-subtle)', fontFamily: 'monospace', margin: '0 0 0.2rem', letterSpacing: '0.02em' }}>
+          {resource.scheduleSpanLabel}
+        </p>
+      )}
+      {todayHours != null && (
+        <p style={{ fontSize: '0.72rem', color: 'var(--of-fg-subtle)', fontFamily: 'monospace', margin: '0 0 0.25rem', letterSpacing: '0.02em' }}>
+          {totalHours != null && totalHours > todayHours
+            ? `~${todayHours}h scheduled · ~${totalHours}h full`
+            : `~${todayHours}h`}
+        </p>
+      )}
+      {resource.reductionReason && (
+        <p style={{
+          fontSize: '0.72rem',
+          color: 'var(--of-fg-muted)',
+          background: 'color-mix(in srgb, var(--of-amber-500, #f59e0b) 8%, transparent)',
+          border: '1px solid color-mix(in srgb, var(--of-amber-500, #f59e0b) 25%, transparent)',
+          borderRadius: 6,
+          padding: '0.4rem 0.5rem',
+          margin: '0 0 0.5rem',
+          lineHeight: 1.45,
+        }}>
+          <strong style={{ display: 'block', fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.15rem' }}>
+            Why less than full?
+          </strong>
+          {resource.reductionReason}
+        </p>
+      )}
       <p className="source">{resource.source}</p>
       {resource.tags?.length > 0 && (
         <div className="meta-row">
@@ -107,7 +335,7 @@ function ResourceCard({ resource }) {
 export default function CourseBuilderPage() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [form, setForm] = useState({ background: '', goal: '', duration: '1 week' });
+  const [form, setForm] = useState({ title: '', background: '', goal: '', duration: '1 week' });
   const [result, setResult] = useState(null);
   const [status, setStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -116,6 +344,22 @@ export default function CourseBuilderPage() {
   const [feedbackNote, setFeedbackNote] = useState('');
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [showFeedbackNote, setShowFeedbackNote] = useState(false);
+  const [panelSections, setPanelSections] = useState(
+    () => loadSectionState() || { form: true, examples: true, saved: false }
+  );
+
+  function toggleSection(key) {
+    setPanelSections((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      persistSectionState(next);
+      return next;
+    });
+  }
+
+  function applySectionState(next) {
+    setPanelSections(next);
+    persistSectionState(next);
+  }
 
   useEffect(() => {
     setSavedPlans(loadSavedPlans());
@@ -134,7 +378,7 @@ export default function CourseBuilderPage() {
   }
 
   function fillExample(ex) {
-    setForm({ background: ex.background, goal: ex.goal, duration: ex.duration });
+    setForm({ title: ex.label, background: ex.background, goal: ex.goal, duration: ex.duration });
     if (isMobile) setPanelOpen(false);
   }
 
@@ -175,9 +419,12 @@ export default function CourseBuilderPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'AI request failed');
-      setResult(data);
+      const normalized = normalizePlanResult(data, form.duration);
+      setResult(normalized);
       setStatus('idle');
-      setSavedPlans(savePlan(form, data));
+      setSavedPlans(savePlan(form, normalized));
+      // Auto-collapse form/examples and reveal saved plans once a plan exists.
+      applySectionState({ form: false, examples: false, saved: true });
     } catch (err) {
       setStatus('error');
       setErrorMsg(err.message);
@@ -190,7 +437,12 @@ export default function CourseBuilderPage() {
   }
 
   function handleLoadPlan(entry) {
-    setForm({ background: entry.background, goal: entry.goal, duration: entry.duration });
+    setForm({
+      title: entry.title || '',
+      background: entry.background,
+      goal: entry.goal,
+      duration: entry.duration,
+    });
     setResult(entry.result);
     setStatus('idle');
     setErrorMsg('');
@@ -281,26 +533,38 @@ export default function CourseBuilderPage() {
           )}
 
           {/* Result */}
-          {result && status !== 'loading' && (
+            {result && status !== 'loading' && (
             <div>
-              {result.summary && (
-                <div
-                  className={cardClass()}
-                  style={{
-                    marginBottom: '2rem',
-                    borderColor: 'color-mix(in srgb, var(--of-fg-brand) 30%, transparent)',
-                    background: 'color-mix(in srgb, var(--of-fg-brand) 5%, var(--of-bg-elevated))',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <BookOpen size={16} />
-                    <strong>Your learning path</strong>
+              {result.summary && (() => {
+                const totalHours = result.plan.reduce((sum, period) => {
+                  return sum + (period.resources || []).reduce((s, r) => s + (r.hours ?? 0), 0);
+                }, 0);
+                return (
+                  <div
+                    className={cardClass()}
+                    style={{
+                      marginBottom: '2rem',
+                      borderColor: 'color-mix(in srgb, var(--of-fg-brand) 30%, transparent)',
+                      background: 'color-mix(in srgb, var(--of-fg-brand) 5%, var(--of-bg-elevated))',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                      <BookOpen size={16} />
+                      <strong>Your learning path</strong>
+                    </div>
+                    <p style={{ margin: 0, lineHeight: 1.6 }}>{result.summary}</p>
+                    {totalHours > 0 && (
+                      <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: 'var(--of-fg-muted)', fontFamily: 'monospace' }}>
+                        Estimated total: ~{totalHours}h
+                      </p>
+                    )}
                   </div>
-                  <p style={{ margin: 0, lineHeight: 1.6 }}>{result.summary}</p>
-                </div>
-              )}
+                );
+              })()}
 
-              {result.plan.map((period, i) => (
+              {result.plan.map((period, i) => {
+                const periodHours = (period.resources || []).reduce((s, r) => s + (r.hours ?? 0), 0);
+                return (
                 <div key={i} style={{ marginBottom: '2.5rem' }}>
                   <div className="section-header" style={{ marginBottom: '1rem' }}>
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -314,7 +578,14 @@ export default function CourseBuilderPage() {
                       </span>
                       {period.period}
                     </h2>
-                    {period.focus && <span className={badgeClass({ variant: 'purple' })}>{period.focus}</span>}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {period.focus && <span className={badgeClass({ variant: 'purple' })}>{period.focus}</span>}
+                      {periodHours > 0 && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--of-fg-subtle)', fontFamily: 'monospace' }}>
+                          ~{periodHours}h
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {period.notes && (
                     <p style={{ color: 'var(--of-fg-muted)', marginBottom: '1rem', fontSize: '0.875rem' }}>
@@ -331,7 +602,66 @@ export default function CourseBuilderPage() {
                     <p style={{ color: 'var(--of-fg-muted)' }}>No matched resources for this period.</p>
                   )}
                 </div>
-              ))}
+                );
+              })}
+
+              {/* Enhancements: full-length courses that exceed the timeframe */}
+              {Array.isArray(result.enhancements) && result.enhancements.length > 0 && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  marginBottom: '2rem',
+                  padding: '1.25rem',
+                  border: '1px solid var(--of-border-line)',
+                  borderRadius: 10,
+                  background: 'color-mix(in srgb, var(--of-fg-brand) 4%, var(--of-bg-elevated))',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <Sparkles size={16} />
+                    <strong>If you have more time</strong>
+                  </div>
+                  <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: 'var(--of-fg-muted)', lineHeight: 1.5 }}>
+                    These full-length courses are too long to fit your current timeframe and aren't recommended to skim. Consider them as natural next steps.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {result.enhancements.map((e) => (
+                      <div key={e.id || e.url} style={{
+                        padding: '0.75rem 0.875rem',
+                        border: '1px solid var(--of-border-line)',
+                        borderRadius: 8,
+                        background: 'var(--of-bg-base)',
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+                          <span className={badgeClass({ variant: badgeVariantByType[e.type] ?? 'default' })}>{e.type}</span>
+                          <span className={badgeClass({ variant: 'default' })}>{e.level}</span>
+                          {e.hours != null && (
+                            <span style={{ fontSize: '0.72rem', color: 'var(--of-fg-subtle)', fontFamily: 'monospace' }}>
+                              ~{e.hours}h full
+                            </span>
+                          )}
+                        </div>
+                        <a
+                          href={e.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none', color: 'var(--of-fg-default)' }}
+                        >
+                          {e.title} <ArrowUpRight size={13} />
+                        </a>
+                        {e.source && (
+                          <p style={{ margin: '0.15rem 0 0.4rem', fontSize: '0.78rem', color: 'var(--of-fg-muted)' }}>
+                            {e.source}
+                          </p>
+                        )}
+                        {e.reason && (
+                          <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--of-fg-muted)', lineHeight: 1.5 }}>
+                            {e.reason}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Feedback widget */}
               <div style={{
@@ -453,8 +783,25 @@ export default function CourseBuilderPage() {
 
             {/* Form */}
             <section>
-              <p className="panel-section-title" style={{ marginBottom: '1rem' }}>Build your plan</p>
+              <AccordionHeader
+                label="Build your plan"
+                open={panelSections.form}
+                onToggle={() => toggleSection('form')}
+              />
+              {panelSections.form && (
               <form onSubmit={handleBuild} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="form-field">
+                  <label htmlFor="title">Plan title <span style={{ color: 'var(--of-fg-subtle)', fontWeight: 400 }}>(optional)</span></label>
+                  <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    value={form.title}
+                    onChange={handleChange}
+                    placeholder="e.g. Transformers deep dive"
+                    maxLength={80}
+                  />
+                </div>
                 <div className="form-field">
                   <label htmlFor="background">Your background *</label>
                   <textarea
@@ -494,11 +841,17 @@ export default function CourseBuilderPage() {
                   {status === 'loading' ? 'Building…' : 'Build my plan'}
                 </button>
               </form>
+              )}
             </section>
 
             {/* Example prompt cards */}
             <section>
-              <p className="panel-section-title" style={{ marginBottom: '0.75rem' }}>Try an example</p>
+              <AccordionHeader
+                label="Try an example"
+                open={panelSections.examples}
+                onToggle={() => toggleSection('examples')}
+              />
+              {panelSections.examples && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
                 {EXAMPLES.map((ex) => (
                   <div
@@ -518,16 +871,20 @@ export default function CourseBuilderPage() {
                   </div>
                 ))}
               </div>
+              )}
             </section>
 
             {/* Saved plans */}
             {savedPlans.length > 0 && (
               <section>
-                <div className="builder-panel-header">
-                  <p className="panel-section-title" style={{ margin: 0 }}>Saved plans</p>
-                  <span className={badgeClass({ variant: 'default' })}>{savedPlans.length}</span>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+                <AccordionHeader
+                  label="Saved plans"
+                  open={panelSections.saved}
+                  onToggle={() => toggleSection('saved')}
+                  badge={savedPlans.length}
+                />
+                {panelSections.saved && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
                   {savedPlans.map((entry) => (
                     <div
                       key={entry.id}
@@ -539,9 +896,9 @@ export default function CourseBuilderPage() {
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ margin: 0, fontWeight: 600, fontSize: '0.8125rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {entry.goal}
+                          {entry.title || entry.goal}
                         </p>
-                        <p style={{ margin: '0.125rem 0 0', fontSize: '0.75rem', color: 'var(--of-fg-muted)' }}>
+                        <p style={{ margin: '0.125rem 0 0', fontSize: '0.75rem', color: 'var(--of-fg-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {entry.duration} · {new Date(entry.savedAt).toLocaleDateString()}
                         </p>
                       </div>
@@ -555,6 +912,7 @@ export default function CourseBuilderPage() {
                     </div>
                   ))}
                 </div>
+                )}
               </section>
             )}
 

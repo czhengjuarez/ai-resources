@@ -1,46 +1,22 @@
 # AI Resource Portal
 
-A shared learning hub where the OpsForward team can discover, browse, and contribute AI and machine learning resources — courses, videos, tools, and reference material — all in one place.
-
-The portal is built around three ideas:
-- **Curated library** — 53 hand-picked resources organized by type and level, sourced from team recommendations, internal wiki pages, and external research
-- **AI Course Builder** — describe your background and goal, and the app generates a structured day-by-day learning plan using only resources already in the library
-- **Community submissions** — team members can submit new resources for review and inclusion
+A shared learning hub for AI and machine learning — browse a curated library, build a personalized course plan, and contribute resources for others.
 
 **Live:** https://ai-course-builder.coscient.workers.dev
 
 ---
 
-## Creating a similar app
+## What's in the portal
 
-This portal is a self-contained template you can fork for any resource library. The pattern is:
+**Three parts:**
 
-1. Define your resources in `src/data/resources.js` (title, source, description, type, level, tags, url)
-2. Run the seed script to load them into a Cloudflare D1 database
-3. The Worker serves the resources via API; React reads from the API with a static fallback
-4. Workers AI reads the same resource list to generate personalized plans — no external model keys needed
+1. **Library** — 80+ curated resources (courses, videos, tools) organized by type and level. Semantic search powered by Cloudflare Vectorize + `bge-base-en-v1.5` embeddings. Community voting surfaces the most useful resources.
+2. **AI Course Builder** — describe your background, goal, and available time (1 day to 3 months). The app generates a structured, day-by-day or week-by-week learning plan using only resources already in the library. Plans respect estimated time commitments per resource — a 1-day plan won't include a 100-hour course.
+3. **Community Submissions** — submit a resource for review. Approved submissions appear in a Community Picks section.
 
-Deploy to any Cloudflare account in under 10 minutes (see [First-time deployment](#first-time-deployment) below).
-
----
-
-## Features
-
-### Resource Library
-- 53 curated resources across 4 sections: University, Industry, Videos, and Tooling
-- Filter by type (material / video / tool) and level (Beginner / Intermediate / Advanced)
-- Full-text search across titles, descriptions, sources, and tags
-- Resources are seeded into a D1 database and served via API
-
-### AI Course Builder (`/course-builder`)
-- Input your background, learning goal, and available time
-- Generates a structured day-by-day learning plan using Cloudflare Workers AI (`@cf/meta/llama-3.1-8b-instruct`)
-- Plans are built exclusively from resources in the library — no hallucinated links
-- Built plans are saved locally (up to 10) via localStorage for quick access
-
-### Community Submissions (`/submit`)
-- Submit a resource to be reviewed for inclusion in the library
-- Submissions are stored in D1 and displayed in a Community Picks section once approved
+**Self-improving over time:**
+- Thumbs-down feedback on Course Builder plans is injected back into the AI prompt on subsequent requests — the model learns from specific notes.
+- A Cloudflare Cron Trigger scans RSS feeds from Anthropic, fast.ai, Hugging Face, Google AI, and Papers With Code every Monday. Workers AI classifies each item; new candidates surface for admin review. Only free, publicly accessible resources are considered — sites with pay-per-crawl or `robots.txt` disallow rules are not scraped.
 
 ---
 
@@ -54,31 +30,73 @@ Deploy to any Cloudflare account in under 10 minutes (see [First-time deployment
 | Routing | react-router-dom v7 |
 | Runtime | Cloudflare Workers |
 | Database | Cloudflare D1 (SQLite) |
-| AI | Cloudflare Workers AI |
+| AI | Cloudflare Workers AI (`llama-3.1-8b-instruct`, `bge-base-en-v1.5`) |
+| Semantic search | Cloudflare Vectorize |
+| Scheduled tasks | Cloudflare Cron Triggers |
 
 ---
 
-## Project Structure
+## Project structure
 
 ```
 ai-resources/
 ├── src/
-│   ├── App.jsx              # Main page — resource grid, filters, search
-│   ├── main.jsx             # Entry point, BrowserRouter + routes
+│   ├── App.jsx                    # Main page — resource grid, filters, semantic search, voting
+│   ├── main.jsx                   # Entry point, BrowserRouter + routes
 │   ├── data/
-│   │   └── resources.js     # Static resource definitions (fallback + AI seed)
+│   │   └── resources.js           # Static resource definitions (fallback + AI/Vectorize seed)
 │   ├── pages/
-│   │   ├── CourseBuilderPage.jsx
-│   │   └── SubmitPage.jsx
+│   │   ├── CourseBuilderPage.jsx  # AI course builder with localStorage plan history
+│   │   ├── SubmitPage.jsx         # Community resource submission form
+│   │   └── AdminPage.jsx          # Admin review UI (submissions, feedback, RSS suggestions)
+│   ├── components/
 │   └── styles/
 │       ├── app.css
 │       └── tokens.css
-├── worker.js                # Cloudflare Worker — API routes + asset serving
-├── schema.sql               # D1 table definitions
-├── seed.sql                 # Initial 53-resource seed data
-├── wrangler.toml            # Cloudflare deployment config
+├── worker.js                      # Cloudflare Worker — all API routes + cron handler + ASSETS
+├── schema.sql                     # D1 table definitions (5 tables)
+├── seed.sql                       # Resource seed data
+├── wrangler.toml                  # Cloudflare deployment config
 └── vite.config.js
 ```
+
+---
+
+## D1 Schema (5 tables)
+
+| Table | Purpose |
+|-------|---------|
+| `resources` | Curated library resources |
+| `community_submissions` | User-submitted resources pending review |
+| `plan_feedback` | Thumbs up/down + notes on AI-generated plans |
+| `resource_votes` | Per-resource votes with voter identity (localStorage ID) |
+| `resource_suggestions` | RSS-sourced candidates awaiting admin review |
+
+---
+
+## API Routes
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/resources` | All curated resources grouped by section (includes `created_at`, `hours`) |
+| `GET` | `/api/community` | Approved community submissions |
+| `POST` | `/api/submit` | Submit a resource for review |
+| `POST` | `/api/ai` | Generate a learning plan with Workers AI |
+| `GET` | `/api/search?q=` | Semantic search via Vectorize (returns matching resource IDs) |
+| `GET` | `/api/votes` | Vote counts for all resources |
+| `POST` | `/api/vote` | Toggle vote on a resource (idempotent, voter ID from localStorage) |
+| `POST` | `/api/feedback` | Submit thumbs up/down + optional note on a course plan |
+| `GET` | `/admin-api/submissions` | List all community submissions (requires `ADMIN_KEY`) |
+| `POST` | `/admin-api/approve` | Approve a community submission |
+| `POST` | `/admin-api/reject` | Delete a community submission |
+| `GET` | `/admin-api/feedback` | List plan feedback with stats |
+| `GET` | `/admin-api/suggestions` | List pending RSS-sourced suggestions |
+| `POST` | `/admin-api/approve-suggestion` | Approve a suggestion (moves to `resources` table) |
+| `POST` | `/admin-api/reject-suggestion` | Dismiss a suggestion |
+| `POST` | `/admin-api/run-rss` | Manually trigger RSS scan |
+| `POST` | `/admin-api/seed-vectors` | Re-embed resources into Vectorize (chunked, supports `start`/`end` params) |
+
+**Admin access:** protected by `ADMIN_KEY` Wrangler secret. Access admin UI at `/admin?key=YOUR_KEY`.
 
 ---
 
@@ -88,42 +106,59 @@ ai-resources/
 
 - Node.js 18+
 - Wrangler CLI (`npm install -g wrangler`)
-- Cloudflare account with Workers and D1 access
-- `@ops-forward/keel` design system available at `../../Keel/packages/keel`
+- Cloudflare account with Workers, D1, Workers AI, and Vectorize access
+- `@ops-forward/keel` design system at `../../Keel/packages/keel`
 
 ### Local development
 
 ```bash
 npm install
 
-# Run frontend only (no Worker, no D1)
+# Frontend only (Vite dev server, no Worker)
 npm run dev
 
-# Run full stack locally with Worker + D1
+# Full stack locally (Worker + D1 via Wrangler)
 npm run cf:dev
 ```
 
 ### First-time deployment
 
-**1. Create the D1 database:**
+**1. Create D1 database:**
 ```bash
 npx wrangler d1 create ai-resources-db
 ```
 Copy the returned `database_id` into `wrangler.toml`.
 
-**2. Run schema migration:**
+**2. Create Vectorize index:**
+```bash
+npx wrangler vectorize create ai-resources-search --dimensions=768 --metric=cosine
+```
+
+**3. Run schema migration:**
 ```bash
 npx wrangler d1 execute ai-resources-db --remote --file=schema.sql
 ```
 
-**3. Seed resources:**
+**4. Seed resources:**
 ```bash
 npx wrangler d1 execute ai-resources-db --remote --file=seed.sql
 ```
 
-**4. Build and deploy:**
+**5. Set admin key secret:**
+```bash
+npx wrangler secret put ADMIN_KEY
+```
+
+**6. Build and deploy:**
 ```bash
 npm run cf:deploy
+```
+
+**7. Seed Vectorize embeddings:**
+After deploy, call the seed endpoint once:
+```bash
+curl -X POST https://your-worker.workers.dev/admin-api/seed-vectors \
+  -H "Authorization: Bearer YOUR_ADMIN_KEY"
 ```
 
 ### Subsequent deploys
@@ -134,22 +169,9 @@ npm run cf:deploy
 
 ---
 
-## API Routes
+## Resource shape
 
-All routes are handled by `worker.js`. Static assets are served via `ASSETS` binding.
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/api/resources` | All curated resources grouped by section |
-| `GET` | `/api/community` | Approved community submissions |
-| `POST` | `/api/submit` | Submit a new resource for review |
-| `POST` | `/api/ai` | Generate a learning plan with Workers AI |
-
----
-
-## Adding Resources
-
-Edit `src/data/resources.js` and `seed.sql` together. Each resource has this shape:
+Each resource in `src/data/resources.js` has this shape:
 
 ```js
 {
@@ -160,30 +182,44 @@ Edit `src/data/resources.js` and `seed.sql` together. Each resource has this sha
   level: 'Beginner' | 'Intermediate' | 'Advanced',
   tags: ['tag1', 'tag2'],
   meta: [],
-  url: 'https://example.com'
+  url: 'https://example.com',
+  hours: 15  // estimated time commitment in hours; null for open-ended resources
 }
 ```
 
-After editing, re-run the seed or insert directly via `wrangler d1 execute`.
+After adding resources, update `seed.sql` and re-run the seed + Vectorize seeding steps.
 
 ---
 
-## Approving Community Submissions
+## Admin UI
 
-Currently managed directly in D1. To approve a submission:
+The admin panel at `/admin?key=YOUR_KEY` has three sections:
 
-```bash
-npx wrangler d1 execute ai-resources-db --remote \
-  --command="UPDATE community_submissions SET approved = 1 WHERE id = <id>;"
-```
-
-An admin UI is a planned future addition.
+- **Submissions** — review and approve/reject community-submitted resources
+- **Plan Feedback** — view stats (helpful vs. needs improvement) and read written notes
+- **RSS Suggestions** — review AI-classified candidates from weekly RSS scans; approve to add to library or dismiss
 
 ---
 
-## Resources — Source Attribution
+## Forking this for another domain
+
+The pattern generalizes:
+
+1. Replace `src/data/resources.js` with your own resource list
+2. Update `seed.sql` to match
+3. Adjust the AI prompt in `worker.js` (`/api/ai` handler) to fit your domain
+4. Update the RSS feeds array in `worker.js` to sources relevant to your topic
+5. Deploy
+
+No external API keys needed. Everything runs on Cloudflare's infrastructure.
+
+---
+
+## Source attribution
 
 Resources were curated from:
 - **Internal wiki** — Curt's AI Landscape Brief, Andres Mariscal's ML 101, Data Science Study Group list
-- **Team recommendations** — via Google Chat and wiki pages
-- **External research** — fast.ai, dair-ai ML YouTube Courses repo, and similar community-curated lists
+- **Team recommendations** — via Google Chat and wiki pages  
+- **Institutional sources** — MIT OpenCourseWare, Stanford Online, Anthropic Skilljar
+- **Community research** — fast.ai, dair-ai ML YouTube Courses repo, and similar curated lists
+- **Automated discovery** — weekly RSS scan from Anthropic, fast.ai, Hugging Face, Google AI, Papers With Code

@@ -174,7 +174,15 @@ export default function App() {
         if (data.sections?.length > 0) {
           const merged = staticSections.map((staticSection) => {
             const dbSection = data.sections.find((s) => s.id === staticSection.id);
-            return dbSection ? { ...staticSection, resources: dbSection.resources } : staticSection;
+            if (!dbSection) return staticSection;
+            const staticByTitle = Object.fromEntries(
+              staticSection.resources.map((r) => [r.title, r])
+            );
+            const resourcesWithHours = dbSection.resources.map((r) => ({
+              ...r,
+              hours: staticByTitle[r.title]?.hours ?? null,
+            }));
+            return { ...staticSection, resources: resourcesWithHours };
           });
           setSections(merged);
         }
@@ -423,6 +431,11 @@ export default function App() {
                           )}
                         </div>
                         <h3>{resource.title}</h3>
+                        {resource.hours != null && (
+                          <p style={{ fontSize: '0.72rem', color: 'var(--of-fg-subtle)', fontFamily: 'monospace', margin: '0 0 0.25rem', letterSpacing: '0.02em' }}>
+                            ~{resource.hours}h
+                          </p>
+                        )}
                         {resource.source && <p className="source">{resource.source}</p>}
                         <p className="desc">{resource.description}</p>
                         <div className="meta-row">

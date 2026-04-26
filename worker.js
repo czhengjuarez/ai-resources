@@ -200,13 +200,17 @@ export default {
             type: r.type,
             level: r.level,
             tags: r.tags,
-            url: r.url
+            url: r.url,
+            hours: r.hours ?? null,
           }))
         );
 
-        // Use compact format — just ID, title, type, level — to stay within context limits
+        // Use compact format — ID, title, type, level, hours — to help model reason about duration fit
         const resourceIndex = allResources
-          .map((r, i) => `${i + 1}. [${r.id}] ${r.title} — ${r.type}, ${r.level}`)
+          .map((r, i) => {
+            const hrs = r.hours != null ? `${r.hours}h` : 'open-ended';
+            return `${i + 1}. [${r.id}] ${r.title} — ${r.type}, ${r.level}, ${hrs}`;
+          })
           .join('\n');
 
         // Fetch recent thumbs-down feedback notes to inject as improvement hints
@@ -225,21 +229,37 @@ export default {
           // Non-fatal: proceed without feedback if DB query fails
         }
 
+        // Duration metadata: per-period budget, format (daily vs weekly), pacing.
+        const DURATION_META = {
+          '1 day':    { days: 1,  weeks: null, totalHours: 6,   format: 'daily',  perDayHours: 6, perWeekHours: null, periods: 1  },
+          '3 days':   { days: 3,  weeks: null, totalHours: 18,  format: 'daily',  perDayHours: 6, perWeekHours: null, periods: 3  },
+          '1 week':   { days: 5,  weeks: 1,    totalHours: 30,  format: 'daily',  perDayHours: 6, perWeekHours: 30,   periods: 5  },
+          '2 weeks':  { days: 10, weeks: 2,    totalHours: 50,  format: 'weekly', perDayHours: 5, perWeekHours: 25,   periods: 2  },
+          '1 month':  { days: 20, weeks: 4,    totalHours: 100, format: 'weekly', perDayHours: 5, perWeekHours: 25,   periods: 4  },
+          '3 months': { days: 60, weeks: 12,   totalHours: 270, format: 'weekly', perDayHours: 4, perWeekHours: 22,   periods: 12 }
+        };
+        const durationMeta = DURATION_META[duration] || DURATION_META['1 week'];
+        const totalAvailableHours = durationMeta.totalHours;
+
         const prompt = `You are an AI learning advisor. Create a learning plan.
 
 Student background: ${background}
 Goal: ${goal}
-Duration: ${duration}
+Duration: ${duration} (~${totalAvailableHours} hours total)
 ${feedbackSection}
 RULES:
 - Only use resource IDs from the list below (format: section::Title)
+- Each resource has an estimated time commitment shown as Xh (e.g. 20h = 20 hours). "open-ended" means no fixed commitment.
+- Do NOT suggest a resource if its hours alone exceed the total available time (${totalAvailableHours}h), unless it is open-ended or a reference material.
+- For short durations (1 day, 3 days), prefer resources under 15h. Mention realistic time commitments in the notes field.
+- If the best resource for the goal is longer than available time, suggest it as a "beyond this plan" recommendation in the notes field rather than including it as a primary resource.
 - Return ONLY a JSON object, no other text
 
-Available resources:
+Available resources (format: ID, type, level, estimated hours):
 ${resourceIndex}
 
-Required JSON format:
-{"plan":[{"period":"Day 1","focus":"theme","resourceIds":["section::Title"],"notes":"tip"}],"summary":"overview"}`;
+Required JSON format (use period labels like ${durationMeta.format === 'weekly' ? '"Week 1", "Week 2"' : '"Day 1", "Day 2"'}):
+{"plan":[{"period":"${durationMeta.format === 'weekly' ? 'Week 1' : 'Day 1'}","focus":"theme","resourceIds":["section::Title"],"notes":"tip"}],"summary":"overview"}`;
 
         const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
           messages: [
@@ -306,14 +326,329 @@ Required JSON format:
 
         // Resolve resource IDs back to full resource objects
         const resourceMap = Object.fromEntries(allResources.map((r) => [r.id, r]));
-        const enrichedPlan = plan.plan.map((period) => ({
-          ...period,
-          resources: (period.resourceIds || [])
-            .map((id) => resourceMap[id])
-            .filter(Boolean)
+        const rawPlan = Array.isArray(plan.plan) ? plan.plan : [];
+
+        // Build focus lookup from model output to preserve intent where possible
+        const focusById = {};
+        for (const period of rawPlan) {
+          for (const id of period.resourceIds || []) {
+            if (!focusById[id] && period.focus) {
+              focusById[id] = period.focus;
+            }
+          }
+        }
+
+        // Flatten unique resources in model order
+        const orderedIds = [];
+        for (const period of rawPlan) {
+          for (const id of period.resourceIds || []) {
+            if (resourceMap[id] && !orderedIds.includes(id)) {
+              orderedIds.push(id);
+            }
+          }
+        }
+
+        let selectedResources = orderedIds.map((id) => resourceMap[id]);
+
+        const goalText = `${goal} ${background}`.toLowerCase();
+        const wantsDeepTrack =
+          duration === '1 month'
+          || /advanced|deep|first principles|research|transformer|llm training|paper/.test(goalText);
+        const needsFoundations = /beginner|no coding|new to|from scratch/.test(goalText);
+
+        const levelScore = { Beginner: 0, Intermediate: 1, Advanced: 2 };
+        const estimateHours = (resource) => {
+          if (resource.hours == null) {
+            return resource.type === 'tool' ? 2 : 6;
+          }
+          return Math.max(1, Number(resource.hours));
+        };
+
+        if (wantsDeepTrack && !needsFoundations) {
+          const focused = selectedResources.filter(
+            (resource) => resource.level !== 'Beginner' && resource.type !== 'tool'
+          );
+          if (focused.length > 0) {
+            selectedResources = focused;
+          }
+        }
+
+        if (wantsDeepTrack) {
+          selectedResources = selectedResources
+            .slice()
+            .sort((a, b) => {
+              const aLevel = levelScore[a.level] ?? 0;
+              const bLevel = levelScore[b.level] ?? 0;
+              if (aLevel !== bLevel) return bLevel - aLevel;
+
+              const aHours = a.hours == null ? 0 : Number(a.hours);
+              const bHours = b.hours == null ? 0 : Number(b.hours);
+              if (aHours !== bHours) return bHours - aHours;
+
+              const aTypePenalty = a.type === 'tool' ? 1 : 0;
+              const bTypePenalty = b.type === 'tool' ? 1 : 0;
+              return aTypePenalty - bTypePenalty;
+            });
+
+          const selectedIds = new Set(selectedResources.map((resource) => resource.id));
+          let selectedEstimatedHours = selectedResources.reduce(
+            (sum, resource) => sum + estimateHours(resource),
+            0
+          );
+
+          if (selectedEstimatedHours < totalAvailableHours * 0.75) {
+            const deepKeywords = [
+              'transformer',
+              'llm',
+              'deep learning',
+              'neural',
+              'nlp',
+              'research',
+              'paper',
+              'pytorch',
+              'rl',
+              'architecture'
+            ];
+
+            const expansionPool = allResources
+              .filter((resource) => !selectedIds.has(resource.id))
+              .filter((resource) => {
+                if (!needsFoundations && resource.level === 'Beginner') return false;
+                if (resource.type === 'tool') return false;
+                return true;
+              })
+              .map((resource) => {
+                const text = `${resource.title} ${resource.source} ${(resource.tags || []).join(' ')}`.toLowerCase();
+                let score = (levelScore[resource.level] ?? 0) * 40;
+                score += resource.type === 'material' ? 16 : 10;
+                score += Math.min(80, estimateHours(resource)) / 2;
+                for (const keyword of deepKeywords) {
+                  if (text.includes(keyword)) score += 12;
+                }
+                if (text.includes('transformer') || text.includes('llm')) score += 20;
+                return { resource, score };
+              })
+              .sort((a, b) => b.score - a.score)
+              .map((entry) => entry.resource);
+
+            for (const resource of expansionPool) {
+              if (selectedEstimatedHours >= totalAvailableHours * 0.95) break;
+              selectedResources.push(resource);
+              selectedEstimatedHours += estimateHours(resource);
+            }
+          }
+        }
+
+        // ── Selection-first, granularity-aware planner ─────────────────────
+        const isWeekly = durationMeta.format === 'weekly';
+        const numPeriods = durationMeta.periods;
+        const perPeriodHours = isWeekly ? durationMeta.perWeekHours : durationMeta.perDayHours;
+        const levelRank = { Beginner: 1, Intermediate: 2, Advanced: 3 };
+
+        // Classify a resource as "no-skim" (formal course) vs skimmable.
+        const NO_SKIM_HINTS = [
+          'specialization', 'university', 'mit', 'stanford', 'coursera',
+          'edx', 'mooc', 'nanodegree', 'certification', 'fast.ai course',
+          'deeplearning.ai'
+        ];
+        function classifyResource(r) {
+          const text = ` ${r.title || ''} ${r.source || ''} ${(r.tags || []).join(' ')} `.toLowerCase();
+          const isFormalCourse = NO_SKIM_HINTS.some((k) => text.includes(k));
+          const longMaterial = (Number(r.hours) || 0) >= 25 && r.type === 'material';
+          return { noSkim: isFormalCourse || longMaterial };
+        }
+
+        const goalSnippet = (goal || '').trim().slice(0, 90);
+
+        // Phase 1: triage. Fits-as-is, skim, or defer to enhancements.
+        const fitsBudget = [];
+        const enhancements = [];
+        for (const r of selectedResources) {
+          const hrs = r.hours == null ? null : Math.max(1, Number(r.hours));
+          const { noSkim } = classifyResource(r);
+
+          if (hrs == null) {
+            fitsBudget.push({
+              resource: r,
+              allocatedHours: r.type === 'tool' ? 2 : 4,
+              originalHours: null,
+              noSkim,
+              reductionReason: null
+            });
+            continue;
+          }
+
+          if (hrs <= totalAvailableHours) {
+            // Fits in full within total timeframe budget.
+            fitsBudget.push({
+              resource: r,
+              allocatedHours: hrs,
+              originalHours: hrs,
+              noSkim,
+              reductionReason: null
+            });
+          } else if (noSkim) {
+            // College-style course — don't skim, suggest as an enhancement.
+            enhancements.push({
+              resource: r,
+              originalHours: hrs,
+              reason: `Full course (~${hrs}h) exceeds your ${duration} window. This is a structured course best taken on its own cadence rather than skimmed — consider it once you have more time.`
+            });
+          } else {
+            // Skim-friendly material: allocate ~40% of original, capped, with explanation.
+            const skim = Math.max(2, Math.min(Math.round(hrs * 0.4), 10));
+            fitsBudget.push({
+              resource: r,
+              allocatedHours: skim,
+              originalHours: hrs,
+              noSkim: false,
+              reductionReason: `Suggested ~${skim}h of the full ~${hrs}h: skim sections most relevant to "${goalSnippet}"; skip optional/advanced detours you can revisit later.`
+            });
+          }
+        }
+
+        // Phase 2: enforce overall budget (trim tail if AI suggested too much).
+        let budgetUsed = 0;
+        const within = [];
+        const overflowTitles = [];
+        for (const item of fitsBudget) {
+          if (budgetUsed + item.allocatedHours <= totalAvailableHours) {
+            within.push(item);
+            budgetUsed += item.allocatedHours;
+          } else {
+            overflowTitles.push(item.resource.title);
+          }
+        }
+
+        // Phase 3: schedule into periods (Day N for ≤1 week, Week N for ≥2 weeks).
+        const buckets = Array.from({ length: numPeriods }, (_, i) => ({
+          period: isWeekly ? `Week ${i + 1}` : `Day ${i + 1}`,
+          focus: '',
+          resources: [],
+          resourceIds: [],
+          plannedHours: 0
         }));
 
-        return json({ plan: enrichedPlan, summary: plan.summary });
+        const periodPrefix = isWeekly ? 'Week' : 'Day';
+        const periodSpanLabel = (startIdx, endIdx) =>
+          startIdx === endIdx
+            ? `${periodPrefix} ${startIdx + 1}`
+            : `${periodPrefix} ${startIdx + 1}-${endIdx + 1}`;
+
+        // Place largest items first so big multi-period courses anchor the schedule.
+        const sorted = within.slice().sort((a, b) => b.allocatedHours - a.allocatedHours);
+        for (const item of sorted) {
+          const rawSpan = Math.max(1, Math.ceil(item.allocatedHours / perPeriodHours));
+          const span = Math.min(rawSpan, buckets.length);
+          const maxStart = Math.max(0, buckets.length - span);
+
+          let bestStart = 0;
+          let bestScore = Infinity;
+          for (let i = 0; i <= maxStart; i++) {
+            let score = 0;
+            for (let j = 0; j < span; j++) {
+              const chunk = item.allocatedHours / span;
+              const projected = buckets[i + j].plannedHours + chunk;
+              const overPenalty = projected > perPeriodHours ? (projected - perPeriodHours) * 100 : 0;
+              score += overPenalty + projected;
+            }
+            if (score < bestScore) {
+              bestScore = score;
+              bestStart = i;
+            }
+          }
+
+          const chunk = item.allocatedHours / span;
+          const startIdx = bestStart;
+          const endIdx = bestStart + span - 1;
+          const spanLabel = periodSpanLabel(startIdx, endIdx);
+
+          for (let j = 0; j < span; j++) {
+            const b = buckets[startIdx + j];
+            b.resources.push({
+              ...item.resource,
+              hours: Math.round(chunk * 10) / 10,
+              sessionHours: Math.round(chunk * 10) / 10,
+              originalHours: item.originalHours,
+              partial: item.originalHours != null && item.allocatedHours < item.originalHours,
+              noSkim: item.noSkim,
+              reductionReason: item.reductionReason,
+              scheduleSpanStart: startIdx + 1,
+              scheduleSpanEnd: endIdx + 1,
+              scheduleSpanLabel: spanLabel
+            });
+            b.resourceIds.push(item.resource.id);
+            b.plannedHours += chunk;
+            if (!b.focus) {
+              b.focus = focusById[item.resource.id] || 'Focused learning';
+            }
+          }
+        }
+
+        // Phase 4: render plan with consolidation periods for empty buckets.
+        const normalizedPlan = buckets.map((b) => {
+          if (b.resources.length === 0) {
+            return {
+              period: b.period,
+              focus: 'Consolidation and practice',
+              notes: isWeekly
+                ? `Lighter ${b.period.toLowerCase()}: review prior weeks, revisit hard concepts, and apply your learning to a small project.`
+                : 'Light day (~3-4h): review notes, revisit hard concepts, and practice.',
+              resourceIds: [],
+              resources: []
+            };
+          }
+
+          const periodLevel = b.resources.reduce((acc, r) => {
+            const rank = levelRank[r.level] || 1;
+            return rank > acc.rank ? { rank, label: r.level } : acc;
+          }, { rank: 1, label: 'Beginner' }).label;
+
+          const planned = Math.round(b.plannedHours);
+          const note = isWeekly
+            ? `Plan ~${planned}h this week (target ~${perPeriodHours}h/week, 4-6h on study days). Difficulty: ${periodLevel}.`
+            : `Plan ~${planned}h today (target 4-6h). Difficulty: ${periodLevel}.`;
+
+          return {
+            period: b.period,
+            focus: b.focus,
+            notes: note,
+            resourceIds: b.resourceIds,
+            resources: b.resources
+          };
+        });
+
+        const summaryBase = typeof plan.summary === 'string' && plan.summary.trim()
+          ? plan.summary.trim()
+          : 'Personalized plan generated from portal resources.';
+
+        const totalUsed = Math.round(budgetUsed);
+        const paceNote = isWeekly
+          ? `Built for a sustainable pace: ~${totalUsed}h across ${numPeriods} week(s), targeting ~${perPeriodHours}h/week.`
+          : `Built for a sustainable pace: ~${totalUsed}h across ${numPeriods} day(s), targeting ~${perPeriodHours}h/day.`;
+        const enhancementNote = enhancements.length > 0
+          ? ` ${enhancements.length} fuller course(s) suggested under "If you have more time".`
+          : '';
+        const overflowNote = overflowTitles.length > 0
+          ? ` Trimmed to fit timeframe: ${[...new Set(overflowTitles)].slice(0, 3).join(', ')}${overflowTitles.length > 3 ? '…' : ''}.`
+          : '';
+
+        return json({
+          plan: normalizedPlan,
+          format: durationMeta.format,
+          enhancements: enhancements.map((e) => ({
+            id: e.resource.id,
+            title: e.resource.title,
+            url: e.resource.url,
+            source: e.resource.source,
+            type: e.resource.type,
+            level: e.resource.level,
+            hours: e.originalHours,
+            tags: e.resource.tags || [],
+            reason: e.reason
+          })),
+          summary: `${summaryBase} ${paceNote}${enhancementNote}${overflowNote}`
+        });
       } catch (err) {
         return json({ error: err.message }, 500);
       }

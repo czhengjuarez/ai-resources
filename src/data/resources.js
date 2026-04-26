@@ -10,6 +10,7 @@ export const sections = [
         description: 'Supervised and unsupervised learning foundations with full lecture notes and assignments.',
         type: 'material',
         level: 'Advanced',
+        hours: 100,
         tags: ['Stanford', 'Free'],
         meta: ['Lecture Notes', 'Advanced'],
         url: 'https://cs229.stanford.edu/'
@@ -20,6 +21,7 @@ export const sections = [
         description: 'Popular Harvard course covering search, probability, neural networks, and ML with Python.',
         type: 'material',
         level: 'Beginner',
+        hours: 35,
         tags: ['Harvard', 'Free'],
         meta: ['Hybrid', 'Beginner'],
         url: 'https://pll.harvard.edu/course/cs50s-introduction-artificial-intelligence-python'
@@ -30,6 +32,7 @@ export const sections = [
         description: 'Large catalog of AI and ML classes, with full lecture notes, exams, and selected videos.',
         type: 'material',
         level: 'Intermediate',
+        hours: null,
         tags: ['MIT', 'Free'],
         meta: ['Notes + Video', 'Intermediate'],
         url: 'https://ocw.mit.edu/search/?q=artificial+intelligence'
@@ -40,6 +43,7 @@ export const sections = [
         description: 'Top-rated free course covering deep learning hands-on: CV, NLP, tabular, and PyTorch. Endorsed by Peter Norvig. Recommended by multiple team members.',
         type: 'material',
         level: 'Beginner',
+        hours: 18,
         tags: ['Fast.ai', 'Free', 'Team Pick'],
         meta: ['Video + Notebooks', 'Beginner'],
         url: 'https://course.fast.ai/'
@@ -50,6 +54,7 @@ export const sections = [
         description: 'Free online book providing deep intuition for neural networks and backpropagation. Highly recommended for building conceptual foundations.',
         type: 'material',
         level: 'Intermediate',
+        hours: 10,
         tags: ['Book', 'Free', 'Team Pick'],
         meta: ['Book', 'Intermediate'],
         url: 'http://neuralnetworksanddeeplearning.com/'
@@ -60,6 +65,7 @@ export const sections = [
         description: 'The definitive deep learning textbook, available free online. Covers theory and math of modern DL systems.',
         type: 'material',
         level: 'Advanced',
+        hours: 80,
         tags: ['Book', 'Free'],
         meta: ['Textbook', 'Advanced'],
         url: 'https://www.deeplearningbook.org/'
@@ -70,6 +76,7 @@ export const sections = [
         description: 'Free math foundations essential for AI: linear algebra, probability, statistics, and calculus. Great prerequisite resource before diving into ML courses.',
         type: 'material',
         level: 'Beginner',
+        hours: 20,
         tags: ['Math', 'Free'],
         meta: ['Interactive', 'Beginner'],
         url: 'https://www.khanacademy.org/math'
@@ -80,6 +87,7 @@ export const sections = [
         description: 'Stanford\'s broad intro to AI covering ML, search, MDPs, game playing, constraint satisfaction, graphical models, and logic. Lecture videos available on YouTube.',
         type: 'material',
         level: 'Intermediate',
+        hours: 80,
         tags: ['Stanford', 'Free', 'AI'],
         meta: ['Lecture Notes + Video', 'Intermediate'],
         url: 'https://stanford-cs221.github.io/'
@@ -90,6 +98,7 @@ export const sections = [
         description: 'Deep dive into NLP and LLMs — word vectors, transformers, BERT, GPT, RLHF, agents, and RAG. Full 2024 lecture playlist freely available on YouTube.',
         type: 'material',
         level: 'Advanced',
+        hours: 40,
         tags: ['Stanford', 'Free', 'NLP', 'LLM'],
         meta: ['Video + Slides', 'Advanced'],
         url: 'https://www.youtube.com/playlist?list=PLoROMvodv4rOaMFbaqxPDoLWjDaRAdP9D'
@@ -100,6 +109,7 @@ export const sections = [
         description: 'Andrew Ng\'s deep learning course at Stanford: CNNs, RNNs, optimization, and project work. Free Fall 2018 lecture videos available on YouTube. Note: the Coursera version (Deep Learning Specialization) requires a paid subscription.',
         type: 'material',
         level: 'Intermediate',
+        hours: 30,
         tags: ['Stanford', 'Free', 'Deep Learning'],
         meta: ['Video + Notes', 'Intermediate'],
         url: 'https://cs230.stanford.edu/'
@@ -110,6 +120,7 @@ export const sections = [
         description: 'Stanford\'s core RL course — MDPs, Q-learning, policy gradients, RLHF, and deep RL. Lecture videos on YouTube. Textbook is Sutton & Barto (free online).',
         type: 'material',
         level: 'Advanced',
+        hours: 40,
         tags: ['Stanford', 'Free', 'Reinforcement Learning'],
         meta: ['Video + Notes', 'Advanced'],
         url: 'https://cs234.stanford.edu/'
@@ -120,6 +131,7 @@ export const sections = [
         description: 'Classic MIT undergrad AI course with full lecture videos. Covers search, constraint satisfaction, learning, neural nets, and vision — timeless foundations.',
         type: 'material',
         level: 'Intermediate',
+        hours: 35,
         tags: ['MIT', 'Free', 'AI'],
         meta: ['Full Video Course', 'Intermediate'],
         url: 'https://ocw.mit.edu/courses/6-034-artificial-intelligence-fall-2010/'
@@ -130,6 +142,7 @@ export const sections = [
         description: 'MIT graduate ML course with comprehensive lecture notes and problem sets. Covers regression, classification, SVMs, HMMs, and Bayesian networks.',
         type: 'material',
         level: 'Advanced',
+        hours: 60,
         tags: ['MIT', 'Free', 'Machine Learning'],
         meta: ['Lecture Notes', 'Graduate'],
         url: 'https://ocw.mit.edu/courses/6-867-machine-learning-fall-2006/'
@@ -140,6 +153,7 @@ export const sections = [
         description: 'MIT\'s intensive intro to deep learning with TensorFlow labs. Covers CNNs, RNNs, GANs, and reinforcement learning. Lectures freely available at introtodeeplearning.com.',
         type: 'material',
         level: 'Intermediate',
+        hours: 12,
         tags: ['MIT', 'Free', 'Deep Learning'],
         meta: ['Video + Labs', 'Intermediate'],
         url: 'http://introtodeeplearning.com/'
@@ -150,6 +164,7 @@ export const sections = [
         description: 'MIT\'s hands-on ML course covering formulation of learning problems, supervised learning, reinforcement learning, and applications to images and temporal sequences. Fully free with no registration required.',
         type: 'material',
         level: 'Intermediate',
+        hours: 156,
         tags: ['MIT', 'Free', 'Machine Learning'],
         meta: ['13 weeks', '~12 hrs/week'],
         url: 'https://openlearninglibrary.mit.edu/courses/course-v1:MITx+6.036+1T2019/about'
@@ -160,6 +175,7 @@ export const sections = [
         description: 'Non-technical MIT course on how modern AI tools work — ChatGPT, DALL-E, AlphaFold, and self-supervised learning. Free lecture videos on OCW.',
         type: 'material',
         level: 'Beginner',
+        hours: 8,
         tags: ['MIT', 'Free', 'Generative AI', 'Foundation Models'],
         meta: ['Video', 'IAP 2024'],
         url: 'https://ocw.mit.edu/courses/6-s087-foundation-models-and-generative-ai-january-iap-2024/'
@@ -170,6 +186,7 @@ export const sections = [
         description: 'Learn to use data and ML to make sense of the real world — regression, classification, and data distributions with Python. Free to audit; certificate $49.',
         type: 'material',
         level: 'Beginner',
+        hours: 20,
         tags: ['MIT', 'Free', 'Data Science', 'Python'],
         meta: ['Free audit', 'Certificate $49'],
         url: 'https://mitxonline.mit.edu/courses/course-v1:MITxT+6.UWTDx/'
@@ -180,6 +197,7 @@ export const sections = [
         description: 'Beginner-friendly MIT intro to AI concepts — participants train their own algorithm and learn how AI thinks and solves problems. Fully free on OCW.',
         type: 'material',
         level: 'Beginner',
+        hours: 2,
         tags: ['MIT', 'Free', 'AI', 'Beginner'],
         meta: ['Free', 'OCW'],
         url: 'https://ocw.mit.edu/courses/res-6-013-ai-101-fall-2021/'
@@ -190,6 +208,7 @@ export const sections = [
         description: 'MIT\'s comprehensive ML course — linear models, SVMs, neural networks, and reinforcement learning. Free to audit on edX; part of the MITx Statistics and Data Science MicroMasters.',
         type: 'material',
         level: 'Advanced',
+        hours: 120,
         tags: ['MIT', 'Free', 'Machine Learning', 'Python'],
         meta: ['Free audit', 'Certificate $300'],
         url: 'https://www.edx.org/learn/machine-learning/massachusetts-institute-of-technology-machine-learning-with-python-from-linear-models-to-deep-learning'
@@ -200,6 +219,7 @@ export const sections = [
         description: 'Applying modern deep learning and foundation models to novel real-world modalities — vision, audio, sensors, medical data, music, art, and multimodal AI. Spring 2025.',
         type: 'material',
         level: 'Intermediate',
+        hours: 25,
         tags: ['MIT', 'Free', 'Multimodal AI', 'Foundation Models'],
         meta: ['Lecture Notes', 'Spring 2025'],
         url: 'https://ocw.mit.edu/courses/mas-s60-how-to-ai-almost-anything-spring-2025/'
@@ -210,6 +230,7 @@ export const sections = [
         description: 'Explores how generative AI tools affect K–12 curricula and teaching — project-based, covering ethics, implications, and hands-on experimentation. Fully free on OCW.',
         type: 'material',
         level: 'Beginner',
+        hours: 20,
         tags: ['MIT', 'Free', 'Generative AI', 'Education'],
         meta: ['Free', 'OCW 2023'],
         url: 'https://ocw.mit.edu/courses/6-s062-generative-artificial-intelligence-in-k12-education-fall-2023/'
@@ -220,6 +241,7 @@ export const sections = [
         description: 'MIT\'s foundational algorithms course — data structures, sorting, graph algorithms, dynamic programming, and performance analysis. The logic behind fast and smart AI systems.',
         type: 'material',
         level: 'Intermediate',
+        hours: 80,
         tags: ['MIT', 'Free', 'Algorithms', 'Computer Science'],
         meta: ['Video + Problem Sets', 'Spring 2020'],
         url: 'https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/'
@@ -237,9 +259,21 @@ export const sections = [
         description: 'Hands-on short courses on prompting, RAG, agents, and production LLM development. Short courses on deeplearning.ai are free. Longer specializations offered via Coursera require a paid subscription.',
         type: 'material',
         level: 'Beginner',
+        hours: 2,
         tags: ['Industry', 'Free'],
         meta: ['Practical', 'Beginner'],
         url: 'https://www.deeplearning.ai/short-courses/'
+      },
+      {
+        title: 'Machine Learning Specialization',
+        source: 'Stanford / DeepLearning.AI',
+        description: '3-course specialization by Andrew Ng covering supervised learning, neural networks, unsupervised learning, recommender systems, and reinforcement learning. Updated version of his legendary course, now in Python with TensorFlow. Rated 4.9/5 by 38,500+ learners. Requires Coursera subscription (~$49/month); financial aid available.',
+        type: 'material',
+        level: 'Beginner',
+        hours: 95,
+        tags: ['Stanford', 'Paid', 'Andrew Ng', 'Coursera', 'Certificate available'],
+        meta: ['Video + Labs', 'Beginner'],
+        url: 'https://www.coursera.org/specializations/machine-learning-introduction'
       },
       {
         title: 'Hugging Face Course',
@@ -247,6 +281,7 @@ export const sections = [
         description: 'Transformer fundamentals, model training, deployment, and open-source tooling tutorials.',
         type: 'material',
         level: 'Intermediate',
+        hours: 15,
         tags: ['Industry', 'Free'],
         meta: ['Docs + Labs', 'Intermediate'],
         url: 'https://huggingface.co/learn'
@@ -257,6 +292,7 @@ export const sections = [
         description: 'Official best practices for building robust prompts and safe assistant experiences.',
         type: 'material',
         level: 'Intermediate',
+        hours: 3,
         tags: ['Anthropic', 'Free'],
         meta: ['Guide', 'Intermediate'],
         url: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview'
@@ -267,6 +303,7 @@ export const sections = [
         description: "Google's free introductory machine learning course using TensorFlow. Covers ML concepts, regression, classification, and neural networks.",
         type: 'material',
         level: 'Beginner',
+        hours: 15,
         tags: ['Google', 'Free'],
         meta: ['Course', 'Beginner'],
         url: 'https://developers.google.com/machine-learning/crash-course/'
@@ -277,6 +314,7 @@ export const sections = [
         description: 'Free courses on building agentic AI systems with LangGraph, including Introduction to LangGraph. Recommended by team for anyone exploring AI agents.',
         type: 'material',
         level: 'Intermediate',
+        hours: 6,
         tags: ['Agents', 'Free', 'Team Pick'],
         meta: ['Course', 'Intermediate'],
         url: 'https://academy.langchain.com/'
@@ -287,6 +325,7 @@ export const sections = [
         description: 'Covers the full ML lifecycle: data, training, deployment, and MLOps. Practical focus on production-ready deep learning systems.',
         type: 'material',
         level: 'Advanced',
+        hours: 30,
         tags: ['MLOps', 'Free'],
         meta: ['Course', 'Advanced'],
         url: 'https://fullstackdeeplearning.com/course/2022/'
@@ -297,6 +336,7 @@ export const sections = [
         description: 'Official quickstart guide for building AI agents with the OpenAI Agents SDK. Covers tools, handoffs, and multi-agent patterns.',
         type: 'material',
         level: 'Intermediate',
+        hours: 2,
         tags: ['Agents', 'OpenAI', 'Free'],
         meta: ['Guide', 'Intermediate'],
         url: 'https://openai.github.io/openai-agents-python/quickstart/'
@@ -307,6 +347,7 @@ export const sections = [
         description: 'University-level AI and ML courses from Stanford, DeepLearning.AI, Google, and others. Most courses can be audited for free (no certificate). Certificates and graded assignments require a paid subscription (~$49/month or per-course fee).',
         type: 'material',
         level: 'Beginner',
+        hours: null,
         tags: ['University', 'Freemium', 'Certificates', 'Paid for certificate'],
         meta: ['Course Platform', 'Beginner'],
         url: 'https://www.coursera.org/search?query=machine+learning'
@@ -317,6 +358,7 @@ export const sections = [
         description: 'Free structured learning paths for AI fundamentals, Azure AI services, and practical AI engineering. Includes hands-on labs and certifications.',
         type: 'material',
         level: 'Beginner',
+        hours: 8,
         tags: ['Microsoft', 'Free', 'Certificates'],
         meta: ['Learning Path', 'Beginner'],
         url: 'https://learn.microsoft.com/en-us/training/browse/?products=ai-services'
@@ -327,6 +369,7 @@ export const sections = [
         description: 'Tracks state-of-the-art AI research with linked code implementations and benchmarks. Best place to connect research papers to working code.',
         type: 'material',
         level: 'Advanced',
+        hours: null,
         tags: ['Research', 'Free'],
         meta: ['Research Hub', 'Advanced'],
         url: 'https://paperswithcode.com/'
@@ -337,6 +380,7 @@ export const sections = [
         description: 'Real-world examples for building with OpenAI APIs: prompting patterns, RAG, embeddings, fine-tuning, and agentic workflows. Practical and frequently updated.',
         type: 'material',
         level: 'Intermediate',
+        hours: null,
         tags: ['OpenAI', 'Free', 'Practical'],
         meta: ['Examples', 'Intermediate'],
         url: 'https://cookbook.openai.com/'
@@ -347,6 +391,7 @@ export const sections = [
         description: 'Free, comprehensive guide to prompt engineering: zero-shot, few-shot, chain-of-thought, and advanced techniques for getting the best out of LLMs.',
         type: 'material',
         level: 'Beginner',
+        hours: 4,
         tags: ['Prompting', 'Free'],
         meta: ['Guide', 'Beginner'],
         url: 'https://learnprompting.org/'
@@ -357,6 +402,7 @@ export const sections = [
         description: 'The primary preprint server for cutting-edge AI and ML research papers. Essential for tracking state-of-the-art developments before they appear in journals.',
         type: 'material',
         level: 'Advanced',
+        hours: null,
         tags: ['Research', 'Free'],
         meta: ['Papers', 'Advanced'],
         url: 'https://arxiv.org/list/cs.AI/recent'
@@ -367,6 +413,7 @@ export const sections = [
         description: 'Massive curated GitHub list of ML frameworks, libraries, datasets, and resources organized by language and topic. A comprehensive index for any ML need.',
         type: 'material',
         level: 'Beginner',
+        hours: null,
         tags: ['Directory', 'Free', 'Open Source'],
         meta: ['Curated List', 'All Levels'],
         url: 'https://github.com/josephmisiti/awesome-machine-learning'
@@ -377,6 +424,7 @@ export const sections = [
         description: 'Weekly practical AI workflow guides — exact prompts, screenshots, and step-by-step walkthroughs for Claude, ChatGPT, and AI tools. 528K+ subscribers, free to read. Great for non-technical practitioners.',
         type: 'material',
         level: 'Beginner',
+        hours: null,
         tags: ['Newsletter', 'Free', 'Practical', 'Prompting', 'Team Pick'],
         meta: ['Weekly newsletter', 'Beginner-friendly'],
         url: 'https://rubenhassid.substack.com/'
@@ -387,6 +435,7 @@ export const sections = [
         description: 'Foundational course covering core Claude features and how to use Claude effectively for everyday work tasks. Free, requires Skilljar account.',
         type: 'material',
         level: 'Beginner',
+        hours: 1,
         tags: ['Anthropic', 'Free', 'Claude'],
         meta: ['Course', 'Beginner'],
         url: 'https://anthropic.skilljar.com/claude-101'
@@ -397,6 +446,7 @@ export const sections = [
         description: 'Learn how to use Claude Code in your daily development workflow. Covers setup, core commands, and practical coding assistance. Free, requires Skilljar account.',
         type: 'material',
         level: 'Beginner',
+        hours: 1,
         tags: ['Anthropic', 'Free', 'Claude', 'Coding'],
         meta: ['Course', 'Beginner'],
         url: 'https://anthropic.skilljar.com/claude-code-101'
@@ -407,6 +457,7 @@ export const sections = [
         description: 'Learn to collaborate with AI effectively, ethically, and safely. Covers the foundational framework for AI fluency in professional settings. Free, requires Skilljar account.',
         type: 'material',
         level: 'Beginner',
+        hours: 2,
         tags: ['Anthropic', 'Free', 'AI Literacy', 'Ethics'],
         meta: ['Course', 'Beginner'],
         url: 'https://anthropic.skilljar.com/ai-fluency-framework-foundations'
@@ -417,6 +468,7 @@ export const sections = [
         description: 'Introductory course explaining how AI models work, what they can and cannot do, and how to use them responsibly. Free, requires Skilljar account.',
         type: 'material',
         level: 'Beginner',
+        hours: 1,
         tags: ['Anthropic', 'Free', 'AI Literacy'],
         meta: ['Course', 'Beginner'],
         url: 'https://anthropic.skilljar.com/ai-capabilities-and-limitations'
@@ -427,6 +479,7 @@ export const sections = [
         description: 'Full-spectrum course on working with the Claude API: authentication, messages, streaming, tool use, and prompt engineering patterns. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 3,
         tags: ['Anthropic', 'Free', 'Claude', 'API', 'Developers'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/claude-with-the-anthropic-api'
@@ -437,6 +490,7 @@ export const sections = [
         description: 'Learn to build MCP servers and clients — including tools, resources, and prompts — using Python. Hands-on introduction to the open standard for AI-tool integration. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 3,
         tags: ['Anthropic', 'Free', 'MCP', 'Developers', 'Agentic'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/introduction-to-model-context-protocol'
@@ -447,6 +501,7 @@ export const sections = [
         description: 'Deep dive into advanced MCP patterns: sampling, notifications, file system integration, and custom transports. For developers building production MCP systems. Free, requires Skilljar account.',
         type: 'material',
         level: 'Advanced',
+        hours: 3,
         tags: ['Anthropic', 'Free', 'MCP', 'Developers', 'Agentic'],
         meta: ['Course', 'Advanced'],
         url: 'https://anthropic.skilljar.com/model-context-protocol-advanced-topics'
@@ -457,6 +512,7 @@ export const sections = [
         description: 'Learn to build, configure, and share Skills in Claude Code — reusable capabilities that extend Claude\'s ability to take actions. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 2,
         tags: ['Anthropic', 'Free', 'Agents', 'Claude', 'Coding'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/introduction-to-agent-skills'
@@ -467,6 +523,7 @@ export const sections = [
         description: 'Learn to use and create sub-agents in Claude Code — composing multi-agent systems where agents delegate to specialized sub-agents. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 2,
         tags: ['Anthropic', 'Free', 'Agents', 'Claude', 'Agentic'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/introduction-to-subagents'
@@ -477,6 +534,7 @@ export const sections = [
         description: 'Full course for working with Claude through AWS Bedrock: setup, API calls, streaming, and production patterns on Amazon\'s managed AI platform. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 3,
         tags: ['Anthropic', 'Free', 'Claude', 'AWS', 'Cloud'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/claude-in-amazon-bedrock'
@@ -487,6 +545,7 @@ export const sections = [
         description: 'Learn to work with Claude through Google Cloud Vertex AI: authentication, API integration, and practical usage on GCP. Free, requires Skilljar account.',
         type: 'material',
         level: 'Intermediate',
+        hours: 3,
         tags: ['Anthropic', 'Free', 'Claude', 'Google Cloud', 'Cloud'],
         meta: ['Course', 'Intermediate'],
         url: 'https://anthropic.skilljar.com/claude-with-google-vertex'
@@ -504,6 +563,7 @@ export const sections = [
         description: 'In-depth AI lessons from fundamentals to modern LLM internals and implementation details.',
         type: 'video',
         level: 'Intermediate',
+        hours: null,
         tags: ['Video', 'Free'],
         meta: ['YouTube', 'Intermediate'],
         url: 'https://www.youtube.com/@AndrejKarpathy'
@@ -514,6 +574,7 @@ export const sections = [
         description: 'Lecture series focused on transformer architecture and practical applications.',
         type: 'video',
         level: 'Advanced',
+        hours: 20,
         tags: ['Stanford', 'Free'],
         meta: ['Lecture Series', 'Advanced'],
         url: 'https://www.youtube.com/playlist?list=PLoROMvodv4rNiJRchCzutFw5ItR_Z27CM'
@@ -524,6 +585,7 @@ export const sections = [
         description: 'Long-form tutorials on ML, deep learning, LLMs, and MLOps for beginners.',
         type: 'video',
         level: 'Beginner',
+        hours: null,
         tags: ['Video', 'Free'],
         meta: ['YouTube', 'Beginner'],
         url: 'https://www.youtube.com/@freecodecamp'
@@ -534,9 +596,10 @@ export const sections = [
         description: 'Free ML engineering course in video format covering regression, classification, deployment, and more. Cohort-based with community support.',
         type: 'video',
         level: 'Beginner',
+        hours: 60,
         tags: ['Video', 'Free', 'Team Pick'],
         meta: ['YouTube', 'Beginner'],
-        url: 'https://www.youtube.com/watch?v=MqI8vt3-cag&list=PL3MmuxUbc_hL5QBBEyKUXKuTNx-3cTpKs'
+        url: 'https://www.youtube.com/watch?v=MqI8vt3-cag&list=PL3MmuxUbc_hL5QBbbEyKUXKuTNx-3cTpKs'
       },
       {
         title: 'ML YouTube Courses (dair-ai)',
@@ -544,6 +607,7 @@ export const sections = [
         description: 'Curated directory of the best free ML and AI YouTube courses: Karpathy, CMU, CS229, NLP, CV, and RL tracks. A great starting point for any topic.',
         type: 'material',
         level: 'Beginner',
+        hours: null,
         tags: ['Directory', 'Free'],
         meta: ['Curated List', 'All Levels'],
         url: 'https://github.com/dair-ai/ML-YouTube-Courses'
@@ -554,6 +618,7 @@ export const sections = [
         description: 'Iconic visual explainers for neural networks, backpropagation, and linear algebra. The clearest and most beautiful introduction to the math behind deep learning.',
         type: 'video',
         level: 'Beginner',
+        hours: 4,
         tags: ['Video', 'Free', 'Math'],
         meta: ['YouTube', 'Beginner'],
         url: 'https://www.youtube.com/@3blue1brown'
@@ -564,6 +629,7 @@ export const sections = [
         description: 'Deep paper-by-paper reviews of top AI research (GPT, RLHF, diffusion models, and more). Highly popular with practitioners who want to understand the research behind modern AI.',
         type: 'video',
         level: 'Advanced',
+        hours: null,
         tags: ['Video', 'Free', 'Research'],
         meta: ['YouTube', 'Advanced'],
         url: 'https://www.youtube.com/@YannicKilcher'
@@ -574,6 +640,7 @@ export const sections = [
         description: 'Accessible summaries of the latest AI and ML research papers. Great for staying current on breakthroughs without reading full papers.',
         type: 'video',
         level: 'Intermediate',
+        hours: null,
         tags: ['Video', 'Free', 'Research'],
         meta: ['YouTube', 'Intermediate'],
         url: 'https://www.youtube.com/@TwoMinutePapers'
@@ -584,6 +651,7 @@ export const sections = [
         description: 'Long-form interviews with leading AI researchers and practitioners including Hinton, LeCun, Karpathy, and Sutskever. Excellent for understanding the people and ideas shaping AI.',
         type: 'video',
         level: 'Intermediate',
+        hours: null,
         tags: ['Video', 'Free', 'Interviews'],
         meta: ['YouTube', 'All Levels'],
         url: 'https://www.youtube.com/@lexfridman'
@@ -594,6 +662,7 @@ export const sections = [
         description: 'Practical Python tutorials for ML, NLP, and AI — with a focus on building real projects. Great for hands-on learners who want to write code from day one.',
         type: 'video',
         level: 'Beginner',
+        hours: null,
         tags: ['Video', 'Free', 'Python'],
         meta: ['YouTube', 'Beginner'],
         url: 'https://www.youtube.com/@sentdex'
@@ -604,6 +673,7 @@ export const sections = [
         description: 'Stanford\'s definitive deep learning for computer vision course. Covers CNNs, object detection, segmentation, and visual recognition in depth.',
         type: 'video',
         level: 'Advanced',
+        hours: 20,
         tags: ['Stanford', 'Free', 'Computer Vision'],
         meta: ['Lecture Series', 'Advanced'],
         url: 'https://www.youtube.com/playlist?list=PL3FW7Lu3i5JvHM8ljYj-zLfQRF3EO8sYv'
@@ -614,6 +684,7 @@ export const sections = [
         description: 'MIT\'s annual deep learning bootcamp. Covers foundations of deep learning, CNNs, RNNs, generative models, and reinforcement learning in a compact format.',
         type: 'video',
         level: 'Intermediate',
+        hours: 12,
         tags: ['MIT', 'Free'],
         meta: ['Lecture Series', 'Intermediate'],
         url: 'https://www.youtube.com/playlist?list=PLtBw6njQRU-rwp5__7C0oIVt26ZgjG9NI'
@@ -624,6 +695,7 @@ export const sections = [
         description: 'Karpathy\'s structured course playlist — builds neural networks from scratch in pure Python/PyTorch. Widely considered one of the best technical deep learning courses available.',
         type: 'video',
         level: 'Intermediate',
+        hours: 14,
         tags: ['Video', 'Free', 'Team Pick'],
         meta: ['YouTube Playlist', 'Intermediate'],
         url: 'https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ'
@@ -634,6 +706,7 @@ export const sections = [
         description: 'Clear, accessible explainers on the latest LLM and GenAI developments — capabilities, benchmarks, and implications. Ideal for non-technical audiences and product thinkers.',
         type: 'video',
         level: 'Beginner',
+        hours: null,
         tags: ['Video', 'Free', 'GenAI'],
         meta: ['YouTube', 'Beginner'],
         url: 'https://www.youtube.com/@aiexplained-official'
@@ -644,6 +717,7 @@ export const sections = [
         description: 'UCL and DeepMind\'s joint RL lecture series — covers the theory and practice of reinforcement learning from foundations to modern deep RL methods.',
         type: 'video',
         level: 'Advanced',
+        hours: 30,
         tags: ['Video', 'Free', 'Reinforcement Learning'],
         meta: ['Lecture Series', 'Advanced'],
         url: 'https://www.youtube.com/playlist?list=PLqYmG7hTraZDVH599EItlEWsUOsJbAodm'
@@ -661,6 +735,7 @@ export const sections = [
         description: 'General-purpose AI assistant for writing, coding, research, and idea exploration.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Assistant', 'Free Tier'],
         meta: ['Assistant', 'All Levels'],
         url: 'https://chatgpt.com/'
@@ -671,6 +746,7 @@ export const sections = [
         description: 'Research assistant that combines web search with citation-backed AI responses.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Research', 'Free Tier'],
         meta: ['Search', 'Beginner'],
         url: 'https://www.perplexity.ai/'
@@ -681,6 +757,7 @@ export const sections = [
         description: 'Automation platform to build AI workflows, data pipelines, and agent-based processes. Free and open source when self-hosted. Cloud-hosted version (n8n.io) has a paid subscription.',
         type: 'tool',
         level: 'Intermediate',
+        hours: null,
         tags: ['Automation', 'Open Source', 'Free to self-host'],
         meta: ['Automation', 'Intermediate'],
         url: 'https://n8n.io/'
@@ -691,6 +768,7 @@ export const sections = [
         description: 'AI-powered research assistant that lets you upload sources (PDFs, docs, URLs) and ask questions grounded in your own materials.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Research', 'Free'],
         meta: ['Research Tool', 'Beginner'],
         url: 'https://notebooklm.google/'
@@ -701,6 +779,7 @@ export const sections = [
         description: 'Framework for building multi-agent AI systems. Define roles, goals, and tasks for crews of AI agents that collaborate to complete complex workflows.',
         type: 'tool',
         level: 'Intermediate',
+        hours: null,
         tags: ['Agents', 'Open Source', 'Team Pick'],
         meta: ['Framework', 'Intermediate'],
         url: 'https://docs.crewai.com/en/quickstart'
@@ -711,6 +790,7 @@ export const sections = [
         description: 'Open standard for extending AI coding agents with reusable skills. Browse the spec, find compatible tools (Cursor, Claude Code, OpenCode, Copilot, and more), and build portable agent workflows.',
         type: 'tool',
         level: 'Intermediate',
+        hours: null,
         tags: ['Agents', 'Open Source', 'Open Standard'],
         meta: ['Ecosystem', 'Intermediate'],
         url: 'https://agentskills.io/home'
@@ -721,6 +801,7 @@ export const sections = [
         description: 'Best platform for hands-on ML practice: datasets, notebooks, competitions, and free courses. Essential for building real-world ML skills through doing.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Practice', 'Free', 'Competitions'],
         meta: ['Platform', 'All Levels'],
         url: 'https://www.kaggle.com/'
@@ -731,6 +812,7 @@ export const sections = [
         description: 'Framework for building RAG (Retrieval-Augmented Generation) systems and knowledge retrieval pipelines with LLMs. Key tool for production AI systems.',
         type: 'tool',
         level: 'Intermediate',
+        hours: null,
         tags: ['RAG', 'Agents', 'Open Source'],
         meta: ['Framework', 'Intermediate'],
         url: 'https://www.llamaindex.ai/'
@@ -741,6 +823,7 @@ export const sections = [
         description: 'ML experiment tracking, model versioning, and production ML monitoring. Industry-standard platform for managing the full ML development lifecycle.',
         type: 'tool',
         level: 'Intermediate',
+        hours: null,
         tags: ['MLOps', 'Free Tier'],
         meta: ['MLOps Platform', 'Intermediate'],
         url: 'https://wandb.ai/'
@@ -751,6 +834,7 @@ export const sections = [
         description: 'Free browser-based IDE for prototyping with Gemini and other Google multimodal models. Great for rapid experimentation with prompts, images, and code.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Google', 'Free', 'Prototyping'],
         meta: ['Dev Tool', 'Beginner'],
         url: 'https://aistudio.google.com/'
@@ -761,6 +845,7 @@ export const sections = [
         description: 'Browser-based coding environment good for building and deploying small projects without local setup. Basic Replit is free. AI coding features (Replit Agent, AI completions) require a paid Core subscription (~$25/month).',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Coding', 'Freemium', 'AI features require paid plan'],
         meta: ['Dev Tool', 'Beginner'],
         url: 'https://replit.com/'
@@ -771,6 +856,7 @@ export const sections = [
         description: 'AI-powered presentation and document creator. Generates structured slides and docs from a prompt — useful for rapid content and deck creation.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Productivity', 'Free Tier'],
         meta: ['Productivity', 'Beginner'],
         url: 'https://gamma.app/'
@@ -781,6 +867,7 @@ export const sections = [
         description: 'High-quality realistic text-to-speech and voice cloning. Industry-leading audio generation for voiceovers, narration, and AI voice applications.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Audio', 'Free Tier'],
         meta: ['Creative AI', 'Beginner'],
         url: 'https://elevenlabs.io/'
@@ -791,6 +878,7 @@ export const sections = [
         description: 'High-quality AI image generation with fine-tuned models. Suited for creative, marketing, and social media visuals with a generous free tier.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Image Gen', 'Free Tier'],
         meta: ['Creative AI', 'Beginner'],
         url: 'https://leonardo.ai/'
@@ -801,6 +889,7 @@ export const sections = [
         description: 'Generates full songs with vocals and instrumentation from text prompts. One of the most capable free AI music generation tools available.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Music', 'Free Tier'],
         meta: ['Creative AI', 'Beginner'],
         url: 'https://suno.com/'
@@ -811,6 +900,7 @@ export const sections = [
         description: 'AI image generation with accurate text rendering inside images — solving one of the hardest problems in image gen. Good for graphics with legible text.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Image Gen', 'Free Tier'],
         meta: ['Creative AI', 'Beginner'],
         url: 'https://ideogram.ai/'
@@ -821,6 +911,7 @@ export const sections = [
         description: 'AI-powered project planning with checklists, mind maps, and automated workflows. Useful for teams building AI-assisted operational processes.',
         type: 'tool',
         level: 'Beginner',
+        hours: null,
         tags: ['Productivity', 'Free Tier'],
         meta: ['Productivity', 'Beginner'],
         url: 'https://www.taskade.com/'
