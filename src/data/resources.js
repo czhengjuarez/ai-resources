@@ -721,6 +721,28 @@ export const sections = [
         tags: ['Video', 'Free', 'Reinforcement Learning'],
         meta: ['Lecture Series', 'Advanced'],
         url: 'https://www.youtube.com/playlist?list=PLqYmG7hTraZDVH599EItlEWsUOsJbAodm'
+      },
+      {
+        title: "Mr. Maeda's Cozy AI Kitchen",
+        source: 'John Maeda · Microsoft Developer',
+        description: 'A Microsoft-produced video series by John Maeda (VP AI Platform) featuring in-depth conversations with AI researchers, engineers, and designers — with live Semantic Kernel demos. Topics include AI agents, generative UI, task-specific models, and AI + design thinking.',
+        type: 'video',
+        level: 'Intermediate',
+        hours: null,
+        tags: ['Video', 'Free', 'AI Design', 'Agents', 'Microsoft'],
+        meta: ['YouTube Series', 'Intermediate'],
+        url: 'https://www.youtube.com/@MicrosoftDeveloper/search?query=cozy+ai+kitchen'
+      },
+      {
+        title: "Mr. Maeda's Cozy AI Kitchen — Notebooks",
+        source: 'John Maeda · GitHub',
+        description: 'Companion Jupyter notebooks for the Cozy AI Kitchen video series. Hands-on code exploring AI agents, AgenticUX, Semantic Kernel patterns, and design + AI integration. Great for following along with the video episodes.',
+        type: 'material',
+        level: 'Intermediate',
+        hours: null,
+        tags: ['GitHub', 'Free', 'AI Design', 'Agents', 'Notebooks', 'Microsoft'],
+        meta: ['Jupyter Notebooks', 'Intermediate'],
+        url: 'https://github.com/johnmaeda/Mr-Maeda-Cozy-AI-Kitchen'
       }
     ]
   },
